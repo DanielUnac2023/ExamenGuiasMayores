@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simulador Examen General de Investidura JA</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 16px;
+        line-height: 1.45;
+        color: #222;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        margin-top: 28px;
+        border-bottom: 2px solid #1f4e8c;
+        color: #1f4e8c;
+      }
+      .q {
+        margin: 14px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      .q p {
+        margin: 0 0 6px;
+        font-weight: 600;
+      }
+      label {
+        display: block;
+        padding: 3px 0;
+        cursor: pointer;
+      }
+      .ok {
+        background: #e6f6e6;
+        border-color: #4caf50;
+      }
+      .bad {
+        background: #fdeaea;
+        border-color: #e53935;
+      }
+      .fb {
+        font-size: 0.9rem;
+        margin-top: 6px;
+      }
+      button {
+        background: #1f4e8c;
+        color: #fff;
+        border: 0;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-right: 8px;
+      }
+      #res {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 16px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Examen General de Investidura JA – Simulador</h1>
+    <div id="exam"></div>
+    <button onclick="grade()">Calificar</button><button onclick="location.reload()">Reiniciar</button>
+    <div id="res"></div>
+    <script>
+      const T = ["Falso", "Verdadero"];
+      const S = [
+        {
+          s: "Sección II: Selección múltiple",
+          q: [
+            {
+              n: 15,
+              t: "¿Cuál es el verdadero propósito al crear un club de Conquistadores?",
+              o: [
+                "Constituir un club de amigos para que los jóvenes y niños se distraigan.",
+                "Alentar a vestir un lindo uniforme con insignias que demuestren su grado de preparación.",
+                "Orientar a los menores por la senda de la verdad y ayudarles a emplear su entusiasmo y energía juvenil a favor de Cristo.",
+                "Capacitar a los menores para que desempeñen una buena labor dentro de la comunidad Adventista.",
+                "Asistir a todos los campamentos y ganar todas las competencias.",
+              ],
+              a: [2],
+            },
+            {
+              n: 16,
+              t: "¿Quién podrá ser admitido en un club de Conquistadores?",
+              o: [
+                "Niños y niñas que tengan diez años o más.",
+                "Niños y niñas que cursen quinto grado primario.",
+                "Niños y niñas que cursen quinto grado primario o que tengan diez años o más.",
+                "Niños y niñas que tengan nueve años o más y/o cursen quinto grado.",
+              ],
+              a: [2],
+              r: 1,
+            },
+            {
+              n: 17,
+              t: "¿Quién podrá ser admitido en un club de Aventureros?",
+              o: [
+                "Niños mayores de 6 años.",
+                "Niños y niñas de 6 a 9 años.",
+                "Niños y niñas de 6 a 10 años.",
+                "Niños y niñas hasta los 9 años.",
+              ],
+              a: [3],
+              r: 1,
+            },
+            {
+              n: 18,
+              t: "¿Quiénes son los principales responsables del desarrollo espiritual de los niños?",
+              o: [
+                "El consejero del club.",
+                "Los padres y los consejeros del club.",
+                "Los líderes espirituales de la iglesia.",
+                "Los padres.",
+              ],
+              a: [3],
+              r: 1,
+            },
+            {
+              n: 19,
+              t: "¿Cuál es el objetivo principal del Club de Guías Mayores?",
+              o: [
+                "Formar líderes que puedan guiar a los menores a Cristo.",
+                "Preparar a los jóvenes para enfrentar la persecución.",
+                "Representar a la iglesia en campamentos y actividades de Ministerio Juvenil.",
+                "Mostrar al mundo que los Adventistas tienen ingenio para distraerse.",
+              ],
+              a: [0],
+            },
+            {
+              n: 20,
+              t: "Un consejero:",
+              o: [
+                "Debe ser Guía Mayor y mayor de 18 años.",
+                "Debe ser mayor de 18 años y, si es posible, ser Guía Mayor.",
+                "Debe ser Guía Mayor y tener experiencia con otros clubes.",
+              ],
+              a: [1],
+            },
+            {
+              n: 21,
+              t: "El uniforme de Conquistadores es recomendable usarlo…",
+              o: [
+                "En reuniones especiales del club e investiduras.",
+                "En excursiones, reuniones especiales e investiduras.",
+                "En reuniones regulares y paseos.",
+                "Todas las anteriores.",
+              ],
+              a: [3],
+              r: 1,
+            },
+            {
+              n: 22,
+              t: "El himno de los Aventureros y Conquistadores debe ser cantado:",
+              o: [
+                "Todos los sábados.",
+                "En todas las actividades del Club.",
+                "En reuniones oficiales del Club.",
+                "En excursiones e investiduras.",
+              ],
+              a: [2],
+              r: 1,
+            },
+            {
+              n: 23,
+              t: "La forma del triángulo en el escudo de los Conquistadores significa:",
+              o: [
+                "Padre, Hijo y Espíritu Santo.",
+                "El Pr. Luther Warren, el Pr. Kern y el Pr. Buitrago.",
+                "El mensaje de los tres ángeles.",
+                "Ninguna de las anteriores.",
+              ],
+              a: [2],
+            },
+          ],
+        },
+        {
+          s: "Sección III: Falso o verdadero",
+          q: [
+            { n: 26, t: "Ningún miembro llevará las insignias del club a menos que vista el uniforme completo.", o: T, a: [1] },
+            { n: 27, t: "Los únicos que pueden investir son los Guías Mayores investidos.", o: T, a: [1], r: 1 },
+            {
+              n: 28,
+              t: "La Barra de «Buena Conducta» se le da de por vida al Guía Mayor y se somete a prueba al Conquistador.",
+              o: T,
+              a: [0],
+              r: 1,
+            },
+            { n: 29, t: "Una ventaja de las actividades manuales es que no necesitan mucha preparación.", o: T, a: [0] },
+            {
+              n: 30,
+              t: "Una característica del desarrollo cognitivo del Aventurero es que posee pensamiento lógico.",
+              o: T,
+              a: [0],
+              r: 1,
+            },
+            { n: 31, t: "Se deben evitar las ilustraciones gráficas en las enseñanzas de las especialidades.", o: T, a: [0] },
+            {
+              n: 32,
+              t: "El aspecto espiritual solo afecta el aspecto psicológico; el físico y el social no los afecta.",
+              o: T,
+              a: [0],
+            },
+            { n: 33, t: "Los clubes deben ofrecer a los jóvenes desarrollo espiritual y resiliencia.", o: T, a: [1] },
+            {
+              n: 34,
+              t: "Los clubes fortalecen el desarrollo físico, espiritual y social, pero carecen de estrategias para el desarrollo psicológico.",
+              o: T,
+              a: [0],
+            },
+            { n: 35, t: "El consejero debe exigir a los niños un trabajo original y perfecto.", o: T, a: [0] },
+          ],
+        },
+        {
+          s: "Sección IV: Historia denominacional",
+          q: [
+            {
+              n: 43,
+              t: "¿En qué año fue adoptado oficialmente el club de Conquistadores?",
+              o: ["1886", "1890", "1950", "Ninguno de los anteriores"],
+              a: [2],
+            },
+            {
+              n: 44,
+              t: "¿Qué sucedió en 1979?",
+              o: [
+                "Nombramiento de J.N. Andrews como presidente de la Asociación General",
+                "Parte el navío Pitcairn en su primer viaje misionero",
+                "Llega el primer predicador a la Isla de Pitcairn",
+                "Cambian las siglas MV por JA",
+                "Ninguna de las anteriores",
+              ],
+              a: [3],
+            },
+            {
+              n: 45,
+              t: "¿Primer capitán del navío Pitcairn?",
+              o: ["El Hno. John Tay", "J.N. Andrews", "Uriah Smith", "Ninguno de los anteriores"],
+              a: [0],
+            },
+            {
+              n: 46,
+              t: "¿Cuáles son pioneros del movimiento JA? (marca todas las correctas)",
+              o: ["Milton Kern", "Luther Warren", "Arthur W. Spaulding", "John Hancock", "Ninguno de los anteriores"],
+              a: [0, 1, 2],
+              m: 1,
+              r: 1,
+            },
+            {
+              n: 47,
+              t: "Harriet Holt fue una de las promotoras de la idea del Club de Conquistadores y creadora de las primeras clases JA: Amigo, Compañero, Guía y Guía Mayor.",
+              o: T,
+              a: [1],
+            },
+            { n: 48, t: "C. Lester Bond adaptó y creó las primeras Especialidades JA.", o: T, a: [1] },
+            {
+              n: 49,
+              t: "Leo Ranzolín, pastor brasileño, fue el primer director de Conquistadores a nivel mundial que no era originario de EE. UU.",
+              o: T,
+              a: [1],
+            },
+            { n: 50, t: "Warren fue el primer Director asociado de Jóvenes de la Asociación General.", o: T, a: [0], r: 1 },
+            {
+              n: 51,
+              t: "Luther Warren (14 años) junto a Harry Fenner (17) iniciaron el movimiento juvenil en 1879.",
+              o: T,
+              a: [1],
+            },
+            { n: 53, t: "En 1863 ocurrió la caída de las estrellas.", o: T, a: [0] },
+            { n: 54, t: "En 1755 ocurrió un gran terremoto en la ciudad de Lisboa, Portugal.", o: T, a: [1] },
+            { n: 55, t: "El mensaje del primer ángel declara la caída de la Babilonia espiritual.", o: T, a: [0] },
+            { n: 56, t: "El mensaje del tercer ángel proclama la adoración al Creador.", o: T, a: [0] },
+            { n: 57, t: "El mensaje del segundo ángel declara la caída de la Babilonia espiritual.", o: T, a: [1] },
+          ],
+        },
+      ];
+      const ex = document.getElementById("exam");
+      let all = [];
+      S.forEach((sec, si) => {
+        ex.insertAdjacentHTML("beforeend", `<h2>${sec.s}</h2>`);
+        sec.q.forEach((q, qi) => {
+          q.id = `q${si}_${qi}`;
+          all.push(q);
+          const ty = q.m ? "checkbox" : "radio";
+          const opts = q.o.map((o, i) => `<label><input type="${ty}" name="${q.id}" value="${i}"> ${o}</label>`).join("");
+          ex.insertAdjacentHTML(
+            "beforeend",
+            `<div class="q" id="${q.id}"><p>${q.n}. ${q.t}</p>${opts}<div class="fb"></div></div>`,
+          );
+        });
+      });
+      function grade() {
+        let ok = 0;
+        all.forEach((q) => {
+          const box = document.getElementById(q.id);
+          const sel = [...box.querySelectorAll("input:checked")]
+            .map((x) => +x.value)
+            .sort()
+            .join();
+          const good = q.a.slice().sort().join() === sel;
+          if (good) ok++;
+          box.className = "q " + (good ? "ok" : "bad");
+          box.querySelector(".fb").textContent =
+            (good ? "Correcta" : "Incorrecta. Respuesta: " + q.a.map((i) => q.o[i]).join(" / ")) +
+            (q.r ? " (clave por confirmar con tu manual)" : "");
+        });
+        document.getElementById("res").textContent = `Resultado: ${ok} / ${all.length} (${Math.round((ok / all.length) * 100)}%)`;
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simulador Examen Guía Mayor</title>
+    <!-- Tailwind CSS CDN para alinearse con las 28 Creencias -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+    <!-- Header Principal -->
+    <header class="bg-indigo-600 text-white shadow-md">
+      <div class="max-w-4xl mx-auto px-6 py-6 text-center">
+        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Simulador Examen Guía Mayor</h1>
+        <p class="mt-1 text-indigo-100 text-xs md:text-sm">Evaluación teórica, práctica e histórica de investidura</p>
+      </div>
+    </header>
+
+    <!-- Contenido Principal Dinámico -->
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full" id="app"></main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+      <p>Plataforma interactiva para Guías Mayores y Conquistadores.</p>
+    </footer>
+
+    <script>
+      // Opción múltiple: [pregunta, "A|B|C|D", índiceCorrecto]
+      // Abierta: [pregunta, respuestaModelo, "grupo1;grupo2|alterna", mínimoDeGruposRequeridos]
+      const Q = [
+        [
+          "¿Función principal de las Sagradas Escrituras en la fe adventista?",
+          "Complementar las tradiciones de la Iglesia.|Servir como autoridad fundamental para la fe y la práctica cristiana.|Sustituir la necesidad de una relación personal con Dios.|Interpretarse únicamente mediante escritos denominacionales.",
+          1,
+        ],
+        [
+          "La doctrina de la Trinidad enseña que:",
+          "Existen tres dioses independientes.|El Padre, el Hijo y el Espíritu Santo son manifestaciones temporales de una sola persona.|Existe un solo Dios: Padre, Hijo y Espíritu Santo, tres personas coeternas.|Jesús llegó a existir después de la creación.",
+          2,
+        ],
+        [
+          "¿Creencia adventista sobre la naturaleza humana después de la muerte?",
+          "El alma consciente continúa viviendo separada del cuerpo.|Los muertos permanecen conscientes de los acontecimientos terrenales.|La muerte es un estado de inconsciencia hasta la resurrección.|Todos los seres humanos resucitan inmediatamente al morir.",
+          2,
+        ],
+        [
+          "Relación entre salvación por gracia y obediencia a la ley de Dios:",
+          "La obediencia compra el derecho a ser salvo.|La gracia elimina la importancia de la obediencia.|La obediencia es una respuesta de fe y amor a la gracia recibida.|La salvación depende exclusivamente de las buenas obras.",
+          2,
+        ],
+        [
+          "El sábado bíblico corresponde a:",
+          "El primer día de la semana.|El séptimo día de la semana.|Cualquier día que una persona elija.|Únicamente las fechas de las fiestas judías.",
+          1,
+        ],
+        [
+          "Propósito de la doctrina del santuario celestial:",
+          "Enseñar que Cristo dejó de interceder después de ascender al cielo.|Explicar el ministerio sacerdotal de Cristo en favor de la humanidad y el desarrollo del juicio divino.|Afirmar que la salvación se obtiene mediante ceremonias humanas.|Enseñar que el santuario celestial reemplaza la autoridad bíblica.",
+          1,
+        ],
+        [
+          "¿Qué describe mejor el don de profecía en la creencia adventista?",
+          "Solo existió en los tiempos bíblicos.|Toda persona que tenga un sueño posee automáticamente el don profético.|Es un don espiritual que debe evaluarse a la luz de las Escrituras.|Un profeta contemporáneo puede contradecir la Biblia.",
+          2,
+        ],
+        [
+          "En la doctrina adventista, el milenio corresponde a:",
+          "Mil años de paz política antes de la segunda venida.|El reinado de Cristo con sus santos en el cielo entre las dos resurrecciones.|Un período simbólico que elimina la necesidad de la segunda venida.|El tiempo en que todos reciben una segunda oportunidad de salvación.",
+          1,
+        ],
+        [
+          "Fundamento de la esperanza adventista en la segunda venida:",
+          "El progreso tecnológico de la humanidad.|El establecimiento de un gobierno mundial cristiano.|La promesa bíblica del regreso personal, visible y glorioso de Jesucristo.|La desaparición gradual de todos los problemas sociales.",
+          2,
+        ],
+        [
+          "¿Qué enseña la creencia adventista sobre la Tierra Nueva?",
+          "Los redimidos vivirán como almas incorpóreas sin creación material.|Dios restaurará la creación y establecerá su morada con los redimidos.|La Tierra será abandonada para siempre.|El pecado continuará existiendo en otra región del universo.",
+          1,
+        ],
+        [
+          "Escribe las seis grandes categorías en que se agrupan las 28 creencias fundamentales.",
+          "Dios (Escrituras, Trinidad, Padre, Hijo, Espíritu); La Humanidad; La Salvación; La Iglesia; La Vida Cristiana; Los Eventos Finales (Últimos acontecimientos).",
+          "dios;humanidad|hombre|ser humano;salvacion;iglesia;vida cristiana;final|ultimo|venida|evento",
+          5,
+        ],
+        [
+          "Escribe el nombre de las creencias 8, 13, 18, 20, 24, 26 y 27.",
+          "8: El gran conflicto · 13: El remanente y su misión · 18: El don de profecía · 20: El sábado · 24: El ministerio de Cristo en el santuario celestial · 26: La muerte y la resurrección · 27: El milenio y el fin del pecado.",
+          "conflicto|controversia;remanente;profecia;sabado;santuario;muerte;milenio",
+          7,
+        ],
+        [
+          "Explica la diferencia entre la experiencia de la salvación, el crecimiento en Cristo y la ley de Dios.",
+          "Salvación: experiencia de la gracia de Cristo que perdona y justifica por la fe. Crecimiento en Cristo: proceso diario de transformación por el Espíritu. Ley de Dios: expresión del carácter y amor de Dios; guía de vida, no medio para ser salvo.",
+          "gracia|fe|perdon|justific;crecimiento|crecer|transform|santific;ley|mandamiento|caracter",
+          3,
+        ],
+        [
+          "Relación entre conflicto cósmico, muerte de Cristo, ministerio en el santuario celestial y erradicación del pecado.",
+          "El conflicto entre Cristo y Satanás cuestiona el carácter de Dios; en la cruz Cristo pagó por el pecado; en el santuario intercede y se desarrolla el juicio; al final Dios erradica el pecado y restaura la creación.",
+          "conflicto|controversia;muerte|cruz|sacrificio;santuario|interces|sacerdot|juicio;erradic|fin del pecado|destru|elimin|aniquil|nueva tierra",
+          3,
+        ],
+        [
+          "«Si somos salvos por gracia, no importa cómo vivimos». Responde bíblicamente.",
+          "Es incompleta: la gracia salva y transforma (Ef. 2:8-10; Rom. 6:1-2; Stg. 2:17). La obediencia y el trato amoroso al prójimo son fruto de la fe, no su causa.",
+          "gracia;obedien|obras|fruto|amor|ley;efesios|romanos|santiago|fe",
+          2,
+        ],
+        [
+          "¿Quién fue uno de los principales predicadores del movimiento millerita?",
+          "John Wesley.|William Miller.|Martín Lutero.|Juan Calvino.",
+          1,
+        ],
+        [
+          "¿Qué fecha se asocia con la Gran Decepción?",
+          "22 de octubre de 1844.|21 de marzo de 1843.|20 de mayo de 1863.|15 de julio de 1874.",
+          0,
+        ],
+        [
+          "¿Quién es reconocida por su ministerio profético en la historia adventista?",
+          "Ana Frank.|Elena G. de White.|Florence Nightingale.|María Baker Eddy.",
+          1,
+        ],
+        ["¿En qué año se organizó la Asociación General?", "1844.|1850.|1863.|1901.", 2],
+        [
+          "¿Quién se relaciona con el desarrollo temprano de la obra editorial adventista?",
+          "James White.|William Booth.|Charles Darwin.|John Newton.",
+          0,
+        ],
+        [
+          "Explica qué ocurrió tras el 22 de octubre de 1844 y cómo se desarrolló la comprensión del santuario celestial.",
+          "Cristo no vino: fue la Gran Decepción. Hiram Edson y otros comprendieron que Cristo inició en el santuario celestial una fase final de ministerio (purificación/juicio investigador, Día de la Expiación).",
+          "desilusion|decepcion;santuario;edson|purificacion|juicio|expiacion|lugar santisimo",
+          3,
+        ],
+        [
+          "Cuatro pioneros adventistas y una contribución de cada uno.",
+          "Ej.: José Bates (sábado), James White (obra editorial), Elena G. de White (don profético), Hiram Edson (santuario), J. N. Andrews (primer misionero), Guillermo Miller (predicación del advenimiento).",
+          "miller;elena|ellen;james white|jaime white;bates;andrews;edson;loughborough;waggoner|jones;kellogg",
+          4,
+        ],
+        [
+          "¿Por qué estudiar a los pioneros sin convertirlos en figuras infalibles?",
+          "Solo la Biblia es la norma infalible; los pioneros fueron humanos con aciertos y errores, y la historia (y Rom. 3:23) lo muestra.",
+          "infalible|error|human|imperfect|falible;biblia|escritura|prueba|norma;pionero|historia|dios",
+          2,
+        ],
+        [
+          "Línea de tiempo: cinco acontecimientos (2 antes de 1863 y 2 después).",
+          "Ej.: 1844 Gran Decepción · 1846 Sábado aceptado · 1860 nombre «Adventista del Séptimo Día» · 1863 Asociación General · 1888 Minneapolis · 1901 reorganización · 1950 Conquistadores.",
+          "1840|1844;1846|1848|1849|1850;1855;1860;1863;1874;1888;1901;1915;1950",
+          5,
+        ],
+        ["¿Año asociado al emblema triangular de Conquistadores (John H. Hancock)?", "1922.|1946.|1950.|1956.", 1],
+        [
+          "¿Año del reconocimiento oficial del Ministerio de Conquistadores por la Asociación General?",
+          "1930.|1946.|1950.|1967.",
+          2,
+        ],
+        [
+          "Diferencia entre club local, asociación/misión, unión y Asociación General.",
+          "Club: unidad local. Asociación/misión: grupo de iglesias de una región. Unión: grupo de asociaciones/misiones. Asociación General: nivel mundial (con divisiones).",
+          "club|local;asociacion|mision|conferencia;union;general|mundial|division",
+          4,
+        ],
+        [
+          "Cuatro acontecimientos importantes de la historia de Conquistadores y su relevancia.",
+          "Ej.: primer club (1907-1909), club patrocinado en Riverside y emblema (1946), reconocimiento de la AG (1950), campamentos/camporees mundiales.",
+          "1907|mckim;1946|riverside|hancock;1950;camporee|campamento;emblema|bandera|himno|cancion;aventurer",
+          3,
+        ],
+        [
+          "Club con uniformes y campamentos pero sin vida espiritual ni servicio: ¿qué se descuida?",
+          "Se descuida la misión: desarrollo espiritual y servicio. Corrección: devoción, estudio bíblico, discipulado y proyectos de servicio regulares.",
+          "espiritual|biblia|oracion|devocion;servicio|comunidad|misi;mision|proposito|objetivo|discipulado",
+          2,
+        ],
+        [
+          "Primera acción al llegar a un accidente (herramientas y cables eléctricos cerca).",
+          "Levantar inmediatamente a la persona.|Comprobar la seguridad de la escena antes de acercarte y activar ayuda.|Darle agua.|Moverla a una zona cómoda sin evaluar riesgos.",
+          1,
+        ],
+        [
+          "Adulto que no responde y no respira normalmente:",
+          "Esperar diez minutos.|Darle alimentos o líquidos.|Activar emergencias, pedir un DEA y comenzar RCP.|Sentarla y pedirle que respire hondo.",
+          2,
+        ],
+        [
+          "Hemorragia externa abundante en una extremidad. Medida inicial:",
+          "Aplicar presión directa firme sobre la herida.|Lavar la herida durante veinte minutos.|Retirar repetidamente el material empapado.|Aplicar tierra.",
+          0,
+        ],
+        [
+          "Quemadura térmica reciente. Conducta inicial:",
+          "Aplicar hielo directamente.|Romper las ampollas.|Enfriar con agua corriente fresca ~20 min y buscar atención según gravedad.|Aplicar mantequilla o pasta dental.",
+          2,
+        ],
+        [
+          "Convulsiones: ¿qué acción es INCORRECTA?",
+          "Retirar objetos peligrosos.|Proteger la cabeza y medir la duración.|Sujetar sus extremidades e introducir un objeto en su boca.|Solicitar asistencia médica cuando esté indicado.",
+          2,
+        ],
+        [
+          "Campista confundido, muy caliente tras exposición al calor. ¿Qué sospechar y hacer?",
+          "Molestia menor; ofrecerle café.|Posible golpe de calor: activar emergencias y enfriar rápido y seguro.|Deshidratación leve; dejarlo solo.|Calambre común; continuar.",
+          1,
+        ],
+        [
+          "Secuencia ante persona inconsciente que respira normalmente (vigilancia, posición lateral, trauma).",
+          "Asegurar la escena, comprobar respiración, llamar a emergencias, vigilar continuamente, colocar en posición lateral de seguridad si no hay sospecha de trauma; si hay trauma, inmovilizar cuello/columna y no moverla salvo peligro.",
+          "seguridad|escena;respira|respiracion|vigil;lateral|recuperacion;cuello|columna|trauma|inmoviliz|cervical;emergencia|ayuda",
+          3,
+        ],
+        [
+          "Caída con dolor intenso y deformidad en el antebrazo: protección, qué evitar, traslado.",
+          "Inmovilizar en la posición encontrada con férula (incluyendo articulaciones vecinas), frío local; no enderezar ni forzar; trasladar a atención médica.",
+          "inmoviliz|ferula|entablill|sostener;frio|hielo|compresa;emergencia|medic|traslado|hospital|urgencia",
+          2,
+        ],
+        [
+          "Confusión, sudoración, debilidad: reconocer enfermedad por calor y cuándo activar emergencias.",
+          "Posible golpe de calor; activar emergencias si hay confusión, desmayo, convulsiones, piel muy caliente o no mejora; enfriar mientras llega ayuda.",
+          "calor|insolacion;confusion|inconsciente|alteracion|convuls|temperatura;emergencia|ayuda|enfri",
+          2,
+        ],
+        [
+          "Atragantamiento grave en adulto consciente y cambio si pierde el conocimiento.",
+          "Adulto consciente: compresiones abdominales (Heimlich) o golpes en la espalda según capacitación. Si pierde el conocimiento: emergencias y RCP.",
+          "heimlich|abdominal|compresion;espalda;inconsciente|rcp|reanimacion|pierde",
+          2,
+        ],
+        [
+          "Cinco elementos de un botiquín de campamento y su uso seguro (incluye guantes/higiene).",
+          "Ej.: guantes (barrera), gasas, vendas, antiséptico, tijeras, esparadrapo, suero, termómetro.",
+          "guante;gasa;venda;antisept;tijera;esparadrapo|cinta;suero|solucion;termometro;pinza",
+          5,
+        ],
+        ["Nudo para formar una gaza fija que no se corre:", "Ballestrinque.|As de guía.|Nudo simple.|Nudo corredizo.", 1],
+        [
+          "Nudo para unir dos cuerdas de diámetro semejante:",
+          "Llano.|Margarita.|Pescador doble, para cualquier unión imaginable.|Corredizo.",
+          0,
+        ],
+        [
+          "Función característica del ballestrinque:",
+          "Unir cuerdas de diámetros muy diferentes.|Sujetar una cuerda a un poste, aunque puede deslizarse bajo ciertas condiciones.|Formar siempre una gaza fija de rescate.|Unir dos cintas certificadas.",
+          1,
+        ],
+        [
+          "Amarra para unir dos postes que se cruzan en ángulo recto:",
+          "Amarra cuadrada.|Amarra diagonal en todos los casos.|Nudo de pescador.|As de guía.",
+          0,
+        ],
+        [
+          "Finalidad principal de una amarra diagonal:",
+          "Unir elementos cruzados y reducir su movimiento o separación.|Sustituir los anclajes de seguridad.|Unir exclusivamente dos cuerdas.|Evitar que la cuerda se moje.",
+          0,
+        ],
+        [
+          "Demuestra cinco nudos con su uso y limitaciones.",
+          "Ej.: as de guía (gaza fija), ballestrinque (sujetar a poste), llano (unir cuerdas iguales), vuelta de escota (cuerdas distintas), pescador (cuerdas resbalosas), margarita (acortar).",
+          "guia;ballestrinque;llano;escota;ocho;margarita;pescador|lenador",
+          5,
+        ],
+        [
+          "Amarra cuadrada y diagonal: inicio, enrollado, estrangulamientos, ajuste y remate.",
+          "Amarra cuadrada: inicio con ballestrinque, enrollado, estrangulamientos y remate. Diagonal: clavar con ballestrinque, enrollar en cruz, estrangular y rematar.",
+          "cuadrada;diagonal;estrangul|remate|ajuste|enroll|ballestrinque",
+          3,
+        ],
+        [
+          "Estructura de 3+ postes: cargas que soporta y por qué no es de rescate.",
+          "Soporta cargas ligeras de campamento; no es apta para personas ni rescate porque no tiene diseño ni supervisión competente.",
+          "soport|carga|peso;supervis|competente|diseno|ingenier|seguridad|rescate;amarr|poste",
+          2,
+        ],
+        [
+          "Inspección de una cuerda y cuatro señales para retirarla.",
+          "Revisar a lo largo y con el tacto. Retirar si hay desgaste, cortes, fibras deshilachadas, quemaduras, químicos, moho/humedad, zonas rígidas o aplastadas, núcleo expuesto o caídas fuertes.",
+          "desgast|abras;corte|rasgu;deshilach|fibra;quemad|fundid;quimic|acido|mancha;hongo|moho|humed;aplast|rigid|dura|blanda;nucleo|alma;edad|antigu|caida|impacto",
+          4,
+        ],
+        [
+          "Diferencia entre narración que entretiene y una que enseña un principio espiritual.",
+          "La que enseña tiene propósito: transmite una verdad bíblica y la aplica a la vida; la que solo entretiene busca diversión sin enseñanza.",
+          "ensen|principio|valor|espiritual|aplicacion|leccion;entretien|diversion|divertir",
+          2,
+        ],
+        [
+          "Cinco elementos que prepara un narrador antes de contar una historia bíblica.",
+          "Ej.: estudiar el pasaje, conocer a la audiencia, definir la enseñanza, ensayar, preparar recursos visuales/voz, orar.",
+          "estudi|leer|conocer|pasaje|biblia;audiencia|edad|nino|publico;objetivo|ensenanza|mensaje|principio;ensay|practic|memori;visual|recurso|material|voz|gesto;oracion|orar",
+          4,
+        ],
+        [
+          "Narración de 3-5 minutos con introducción, desarrollo, voz y pausas, enseñanza, aplicación y conclusión.",
+          "Escribe una narración con las seis partes: introducción atractiva, desarrollo ordenado, voz/pausas, enseñanza fiel, aplicación práctica y conclusión memorable.",
+          "introduccion|inicio|empez;ensenanza|leccion|principio;aplicacion|vida|practic|hoy;conclusion|final|termin",
+          3,
+        ],
+        [
+          "Un niño hace una pregunta difícil y no conoces la respuesta.",
+          "Reconocer con honestidad que no lo sabes, felicitar la pregunta, investigar juntos en la Biblia/con alguien capacitado y responder después.",
+          "no se|no conozco|honest|sinceri;investig|buscar|estudi|averiguar|biblia|pastor;juntos|despues|luego|proxima|felicit|buena pregunta",
+          2,
+        ],
+        [
+          "Diferencias entre uniforme de Guía Mayor, Conquistadores y Aventureros.",
+          "Cada uno tiene propósito, insignias, especialidades y normas propias según el reglamento de su campo.",
+          "guia mayor;conquistador;aventurer;insignia|especialidad|proposito|norma|reglamento",
+          3,
+        ],
+        [
+          "¿Por qué llevar insignias y cargos según el reglamento?",
+          "Para dar uniformidad, orden, identidad y respeto al mérito de cada logro; la ubicación arbitraria confunde y no refleja lo oficial.",
+          "reglamento|norma|manual|oficial;uniformidad|orden|respeto|identidad|significado|merito|justicia|logro",
+          2,
+        ],
+        [
+          "Ley, Voto del Conquistador, Voto y Ley de Aventureros y compromisos de liderazgo.",
+          "Escríbelos de memoria según tu manual oficial; si no hay voto de Guía Mayor, explica compromisos de liderazgo (ejemplo, servicio, protección de menores).",
+          "ley;voto;conquistador;aventurer|guia mayor|liderazgo|compromiso",
+          3,
+        ],
+        [
+          "Significado práctico de los ideales de Conquistadores y Aventureros, con un ejemplo.",
+          "Explica el ideal (p. ej. llevar el mensaje del advenimiento, servir) y da un ejemplo concreto de aplicación en el club.",
+          "advenimiento|mensaje|mision|servicio|amor|obedien|jesus|ideal;ejemplo|por ejemplo|cuando|club",
+          2,
+        ],
+        [
+          "Guía Mayor con uniforme incompleto que inventa la ubicación de una insignia: corrección sin humillarlo.",
+          "Corregir en privado con respeto, mostrar la ubicación oficial en el reglamento y ayudarle a corregirla.",
+          "privado|aparte|reservad|discret|dialogo|conversar|solas;reglamento|manual|correcta|oficial;respeto|dignidad|humill|ensen|ayud",
+          2,
+        ],
+        [
+          "Describe el emblema triangular de Conquistadores y su significado.",
+          "Triángulo que representa el desarrollo físico, mental y espiritual, con la Biblia, la espada y el escudo (confirma los detalles en tu manual de campo).",
+          "triangulo;biblia|escudo|espada|cruz;fisic|mental|espiritual|cuerpo|mente|alma",
+          2,
+        ],
+        [
+          "Describe el emblema de Aventureros, sus elementos y mensaje.",
+          "Describe los elementos del emblema oficial y su mensaje: amor de Jesús, familia y desarrollo del niño (confirma con tu manual).",
+          "jesus|cristo|amor|nino|nina|escudo|corazon|mano|familia;emblema|simbol|significa|mensaje|represent",
+          2,
+        ],
+        [
+          "Diferencia entre logotipo, emblema de organización, insignia de rango e insignia de especialidad.",
+          "Logotipo: identidad gráfica. Emblema: símbolo oficial de la organización. Rango: nivel o progreso. Especialidad: habilidad o conocimiento adquirido.",
+          "logotipo|logo;emblema;rango;especialidad",
+          3,
+        ],
+        [
+          "Criterios para decidir si es apropiado modificar un emblema oficial.",
+          "No se debe modificar: es oficial, con significado definido, y requiere aprobación; se respeta el reglamento y la identidad.",
+          "oficial|reglamento|autoriz|aprob|norma|no se debe|identidad|respet|manual;significado|simbol|colores|forma|diseno",
+          2,
+        ],
+        [
+          "Criterio más importante al seleccionar un lugar de campamento:",
+          "Mejor vista, aunque esté expuesto a inundaciones.|Cerca del agua, aunque el terreno sea inestable.|Seguro, autorizado, con buen drenaje y lejos de riesgos previsibles.|Que permita fogata en cualquier circunstancia.",
+          2,
+        ],
+        [
+          "Ante alerta de tormenta eléctrica al aire libre:",
+          "Refugiarse bajo el árbol más alto.|Permanecer junto a postes metálicos.|Buscar refugio cerrado y seguro, siguiendo indicaciones de autoridades.|Acostarse junto a un río.",
+          2,
+        ],
+        [
+          "Método más apropiado para potabilizar agua de una fuente natural:",
+          "Observar si es transparente.|Usar un método reconocido de tratamiento adecuado a los contaminantes posibles.|Añadir detergente.|Dejarla reposar unos minutos.",
+          1,
+        ],
+        [
+          "Práctica más adecuada para manejar una fogata:",
+          "Encenderla aunque exista prohibición.|Prepararla en sitio permitido, con control y extinción, y apagarla por completo.|Dejarla encendida toda la noche.|Usar combustible inflamable para acelerar.",
+          1,
+        ],
+        [
+          "Información esencial de un plan de caminata:",
+          "Únicamente el destino.|Ruta, duración, clima, equipo, estado de participantes, comunicaciones y plan de emergencia.|Solo la cantidad de alimentos.|La velocidad del más rápido.",
+          1,
+        ],
+        [
+          "Organización de un campamento de dos noches para veinte conquistadores.",
+          "Definir zonas, agua potable, alimentos, saneamiento, residuos, supervisión de adultos, seguridad y plan de emergencia.",
+          "zona|distribuc|area;agua;alimento|comida;saneamiento|letrina|bano|higiene;residuo|basura;supervision|adulto|proporcion|vigilan;emergencia;seguridad",
+          5,
+        ],
+        [
+          "Cómo orientar a un grupo con mapa y brújula.",
+          "Orientar el mapa al norte, considerar declinación, tomar el rumbo (azimut), seguirlo con puntos de referencia y corregir desviaciones manteniendo al grupo unido.",
+          "norte|declinacion;rumbo|azimut|grados;referencia|corregir|desviacion;mapa|orienta;grupo|seguridad",
+          4,
+        ],
+        [
+          "Participante separado del grupo: acciones del líder, comunicaciones y búsqueda.",
+          "Detener al grupo, contar, buscar en el último punto visto, comunicar, proteger al grupo y activar el plan de búsqueda/autoridades si no aparece pronto.",
+          "detener|parar|contar|alto;buscar|ultimo lugar|ultimo punto;llamar|comunic|radio|telefono|silbato|aviso;plan de busqueda|autoridades|rescate|activar|emergencia",
+          3,
+        ],
+        [
+          "Sistema seguro para almacenar alimentos y agua en campamento.",
+          "Separar crudos y cocidos, contenedores cerrados y colgados o fuera del alcance de animales, mantener frío y agua potable suficiente.",
+          "contaminacion cruzada|separar|crudo;animales|colgar|cierre|hermetic|contenedor;temperatura|refriger|hielera|frio|conserv;agua|hidrata|potable|litros",
+          3,
+        ],
+        [
+          "Cinco riesgos ambientales de un campamento y una medida preventiva para cada uno.",
+          "Ej.: tormentas, calor, inundaciones, incendios, animales/insectos, terreno inestable, frío; cada uno con medida preventiva.",
+          "tormenta|rayo;calor|insolac;inundac|crecida;incendio|fuego;animal|serpiente|picadura|insecto;terreno|caida|arbol|rama;frio|hipotermia;plantas|toxic",
+          5,
+        ],
+        [
+          "Responsabilidad principal de un Guía Mayor:",
+          "Conseguir que el club gane todas las competencias.|Promover el desarrollo espiritual, físico, mental y social, cuidando la seguridad de los menores.|Hacer personalmente todas las tareas.|Priorizar la disciplina sobre toda consideración humana.",
+          1,
+        ],
+        [
+          "Otro adulto tiene conducta inapropiada con un menor. ¿Qué hacer?",
+          "Investigar interrogando al menor repetidamente.|Ignorar el comentario si no hay pruebas visibles.|Priorizar la seguridad del menor, reportar por canales de protección y cumplir obligaciones legales.|Prometer secreto absoluto.",
+          2,
+        ],
+        [
+          "Dos líderes discrepan y uno desacredita al otro frente a los conquistadores. ¿Cómo intervienes?",
+          "Intervenir con calma, hablar con ambos en privado, escuchar, mediar y buscar acuerdo (Mat. 18).",
+          "privado|aparte|solas|no delante|discret|reunion;respeto|escuch|medi;acuerdo|concilia|unidad|reconcil|mateo 18",
+          2,
+        ],
+        [
+          "Diseña una actividad de servicio comunitario con crecimiento espiritual y habilidades.",
+          "Define actividad, beneficio concreto, componente espiritual (devocional) y habilidades que se practican.",
+          "servicio|comunidad|beneficio;espiritual|oracion|biblia|devocion;habilidad|capacit|especialidad|taller;evalu|objetivo|plan",
+          3,
+        ],
+        [
+          "¿Cómo evalúas el éxito de un club sin depender de miembros, premios o competencias?",
+          "Por crecimiento espiritual, servicio e impacto comunitario, retención y participación, desarrollo de los miembros y evaluaciones.",
+          "espiritual|transformac|bautismo|vida;servicio|comunidad|impacto;retenc|participacion|crecimiento|desarrollo|encuesta|evalu",
+          2,
+        ],
+        [
+          "Conquistador sin recursos para el uniforme completo.",
+          "Apoyar con discreción (uniforme usado, fondos, donaciones), manteniendo su dignidad y favoreciendo su participación.",
+          "dignidad|privado|discret|confidencial;apoyar|ayuda|fondo|donaci|prestar|recolect|usado|gestion|beca;particip|inclu",
+          2,
+        ],
+        [
+          "Cómo preparas a un futuro director de club.",
+          "Mentoría, capacitación, delegación gradual de responsabilidades, práctica acompañada y conocimiento del reglamento y de la protección de menores.",
+          "mentor|capacit|formar|entrena|delegar|ensenar;responsabilidad|liderazgo|gradual|practica|acompan;curso|manual|reglamento|capacitacion|protecci",
+          2,
+        ],
+        [
+          "Escribe tu compromiso personal de Guía Mayor.",
+          "Compromiso que integre fe, servicio, disciplina, protección de menores y ejemplo cristiano.",
+          "fe|dios|oracion;servicio;disciplina;proteccion|menores|ninos|seguridad;ejemplo",
+          4,
+        ],
+      ];
+
+      const N = (s) =>
+        s
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "");
+      const isMC = (q) => q.length === 3;
+      let i = 0,
+        res = {},
+        done = false,
+        mode = "all",
+        list = [];
+      const $ = document.getElementById("app");
+      const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+      function start(m) {
+        mode = m;
+        list = Q.map((q, k) => k).filter((k) => m === "all" || isMC(Q[k]));
+        i = 0;
+        res = {};
+        done = false;
+        render();
+      }
+
+      function home() {
+        $.innerHTML = `
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+        <h2 class="text-2xl font-bold text-slate-900 mb-3">Simulador · Examen de Investidura</h2>
+        <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-6">
+            Herramienta interactiva para practicar y afianzar los conocimientos exigidos en la prueba teórica y práctica de Guías Mayores. Las preguntas de opción múltiple se evalúan automáticamente, mientras que las abiertas analizan conceptos clave esperados.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition text-sm shadow-sm" onclick="start('all')">
+                Examen Completo (80 preguntas)
+            </button>
+            <button class="bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3 px-6 rounded-xl border border-slate-300 transition text-sm shadow-sm" onclick="start('mc')">
+                Solo Opción Múltiple (35 preguntas)
+            </button>
+        </div>
+    </div>`;
+      }
+
+      function render() {
+        if (i >= list.length) return fin();
+        const k = list[i],
+          q = Q[k],
+          r = res[k];
+        const pct = Math.round((i / list.length) * 100);
+
+        let h = `
+    <!-- Barra de Progreso -->
+    <div class="mb-6">
+        <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
+            <span>Pregunta ${i + 1} de ${list.length}</span>
+            <span>${pct}% Completado</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+            <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Pregunta -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+        <div class="inline-block bg-indigo-50 text-indigo-700 font-bold text-xs px-3 py-1 rounded-full mb-4">
+            Pregunta #${k + 1}
+        </div>
+        <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-6 leading-snug">
+            ${esc(q[0])}
+        </h3>`;
+
+        if (isMC(q)) {
+          h += `<div class="space-y-3">`;
+          q[1].split("|").forEach((o, j) => {
+            let btnClass =
+              "w-full text-left p-4 rounded-xl border text-sm md:text-base font-medium transition flex items-start gap-3 ";
+            if (!r) {
+              btnClass += "border-slate-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/50 text-slate-700";
+            } else {
+              if (j === q[2]) {
+                btnClass += "border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold";
+              } else if (j === r.sel) {
+                btnClass += "border-rose-500 bg-rose-50 text-rose-900 font-semibold";
+              } else {
+                btnClass += "border-slate-200 bg-slate-50 text-slate-400 opacity-60";
+              }
+            }
+            const label = "ABCD"[j];
+            h += `
+            <button class="${btnClass}" ${r ? "disabled" : ""} onclick="pick(${k},${j})">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold shrink-0">${label}</span>
+                <span>${esc(o)}</span>
+            </button>`;
+          });
+          h += `</div>`;
+
+          if (r) {
+            h += `
+            <div class="mt-6 p-4 rounded-xl text-sm font-medium ${r.ok ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-rose-50 text-rose-800 border border-rose-200"}">
+                ${r.ok ? "✔ ¡Correcto!" : "✘ Incorrecto. La respuesta correcta era: <b>" + "ABCD"[q[2]] + ". " + esc(q[1].split("|")[q[2]]) + "</b>"}
+            </div>`;
+          }
+        } else {
+          h += `
+        <textarea id="ta" ${r ? "disabled" : ""} class="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-800 text-sm md:text-base mb-4 min-h-[130px] bg-slate-50" placeholder="Escribe tu respuesta aquí con tus palabras...">${r ? esc(r.txt) : ""}</textarea>`;
+
+          if (!r) {
+            h += `
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition text-sm shadow-sm" onclick="chk(${k})">
+                Comprobar respuesta
+            </button>`;
+          } else {
+            const g = q[2].split(";");
+            h += `
+            <div class="p-5 rounded-xl text-sm ${r.ok ? "bg-emerald-50 text-emerald-900 border border-emerald-200" : "bg-rose-50 text-rose-900 border border-rose-200"} space-y-3">
+                <div class="font-bold flex items-center justify-between">
+                    <span>${r.ok ? "✔ Evaluación: Válida" : "✘ Evaluación: Requiere ajuste"}</span>
+                    <span class="text-xs bg-white/70 px-2 py-1 rounded border">${r.hit.length}/${g.length} conceptos (req. ${q[3]})</span>
+                </div>
+                <div class="text-xs leading-relaxed opacity-90">
+                    <p><b>Conceptos detectados:</b> ${r.hit.length ? esc(r.hit.join(" · ")) : "Ninguno"}</p>
+                    <p><b>Conceptos faltantes:</b> ${r.miss.length ? esc(r.miss.join(" · ")) : "Ninguno"}</p>
+                </div>
+                <div class="pt-2 border-t border-black/10">
+                    <p class="font-bold mb-1">Respuesta modelo / Criterio:</p>
+                    <p class="italic text-slate-700">${esc(q[1])}</p>
+                </div>
+                <div class="pt-2">
+                    <button class="bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-medium px-4 py-1.5 rounded-lg text-xs transition" onclick="tog(${k})">
+                        ${r.ok ? "Marcar manualmente como incorrecta" : "Marcar manualmente como correcta"}
+                    </button>
+                </div>
+            </div>`;
+          }
+        }
+
+        if (r) {
+          h += `
+        <div class="mt-6 text-right">
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition text-sm shadow-sm" onclick="i++;render()">
+                ${i + 1 === list.length ? "Finalizar y ver resultado" : "Siguiente pregunta →"}
+            </button>
+        </div>`;
+        }
+
+        $.innerHTML = h + "</div>";
+      }
+
+      function pick(k, j) {
+        res[k] = { sel: j, ok: j === Q[k][2] };
+        render();
+      }
+      function chk(k) {
+        const t = document.getElementById("ta").value,
+          n = N(t),
+          g = Q[k][2].split(";"),
+          hit = [],
+          miss = [];
+        g.forEach((x) => {
+          const f = x.split("|").find((a) => n.includes(a));
+          f ? hit.push(f) : miss.push(x.split("|")[0]);
+        });
+        res[k] = { txt: t, hit, miss, ok: hit.length >= Q[k][3] };
+        render();
+      }
+      function tog(k) {
+        res[k].ok = !res[k].ok;
+        render();
+      }
+
+      function fin() {
+        const ok = list.filter((k) => res[k] && res[k].ok).length;
+        const p = Math.round((ok / list.length) * 100);
+        const bad = list.filter((k) => !(res[k] && res[k].ok));
+
+        $.innerHTML = `
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
+        <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Resultado de la Evaluación</h2>
+        <p class="text-slate-500 text-sm mb-6">Resumen de tu rendimiento académico y teórico</p>
+        
+        <div class="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 font-extrabold text-4xl md:text-5xl px-8 py-6 rounded-2xl border border-indigo-100 mb-6">
+            ${ok} / ${list.length} <span class="text-xl text-indigo-400 font-normal ml-2">(${p}%)</span>
+        </div>
+
+        <p class="text-base font-semibold mb-6 ${p >= 80 ? "text-emerald-600" : p >= 60 ? "text-amber-600" : "text-rose-600"}">
+            ${p >= 80 ? "¡Excelente! Tienes un dominio sólido de los temas." : p >= 60 ? "Buen intento. Revisa las áreas donde tuviste fallos." : "Necesitas repasar más los manuales e historia."}
+        </p>
+
+        ${
+          bad.length
+            ? `
+        <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 text-left mb-6">
+            <span class="font-bold text-xs text-slate-500 uppercase tracking-wider block mb-2">Preguntas para repasar:</span>
+            <div class="flex flex-wrap gap-1.5">
+                ${bad.map((k) => `<span class="bg-rose-100 text-rose-700 text-xs font-semibold px-2.5 py-1 rounded-md">#${k + 1}</span>`).join("")}
+            </div>
+        </div>
+        `
+            : ""
+        }
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition text-sm shadow-sm" onclick="start('${mode}')">
+                Intentar de nuevo
+            </button>
+            <button class="bg-white hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-6 rounded-xl border border-slate-300 transition text-sm shadow-sm" onclick="home()">
+                Menú de inicio
+            </button>
+        </div>
+    </div>`;
+      }
+
+      home();
+    </script>
+  </body>
+</html>
