@@ -489,7 +489,6 @@
         });
 
         container.innerHTML = html;
-        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       function saveOpen(key) {
@@ -507,9 +506,11 @@
         if (dir === 1 && currentSectionIndex < sections.length - 1) {
           currentSectionIndex++;
           renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (dir === -1 && currentSectionIndex > 0) {
           currentSectionIndex--;
           renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (currentSectionIndex === sections.length - 1 && dir === 1) {
           gradeExam();
         }

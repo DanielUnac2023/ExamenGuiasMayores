@@ -676,7 +676,6 @@
         });
 
         container.innerHTML = html;
-        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
       function pickAnswer(qIndex, optIdx) {
@@ -715,9 +714,11 @@
         if (direction === 1 && currentSectionIndex < sections.length - 1) {
           currentSectionIndex++;
           renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (direction === -1 && currentSectionIndex > 0) {
           currentSectionIndex--;
           renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } else if (currentSectionIndex === sections.length - 1 && direction === 1) {
           // Al llegar al final de la última sección, mostrar resumen global
           showGlobalSummary();
