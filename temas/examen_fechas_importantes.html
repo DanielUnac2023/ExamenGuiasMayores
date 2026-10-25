@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examen de Historia JA - Fechas Importantes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header Principal -->
+    <header class="bg-gradient-to-r from-emerald-800 to-teal-700 text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-6 text-center">
+            <div class="inline-flex items-center space-x-2 bg-emerald-900/50 px-3 py-1 rounded-full text-xs font-semibold tracking-wide uppercase mb-2">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Evaluación de Investidura</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Examen de Fechas Históricas JA</h1>
+            <p class="text-xs sm:text-sm text-emerald-100 mt-1">Sociedad de Jóvenes, Conquistadores y Aventureros</p>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-4xl mx-auto px-4 py-6 flex-grow w-full">
+        <!-- Navegación por Modos -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 mb-6 flex flex-wrap gap-2 justify-center">
+            <button onclick="switchMode('decadas')" id="btn-decadas" class="mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-emerald-600 text-white shadow-sm">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Por Décadas</span>
+            </button>
+            <button onclick="switchMode('relacionar')" id="btn-relacionar" class="mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-link"></i>
+                <span>Relacionar Fecha</span>
+            </button>
+            <button onclick="switchMode('vf')" id="btn-vf" class="mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-check-double"></i>
+                <span>Verdadero / Falso</span>
+            </button>
+            <button onclick="switchMode('multiple')" id="btn-multiple" class="mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Opción Múltiple</span>
+            </button>
+        </div>
+
+        <!-- Tarjeta del Examen / Sección Activa -->
+        <div id="exam-card" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+            <!-- El contenido dinámico se inyectará aquí -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-8">
+        <p>Guias Investidura &copy; Plataforma de Evaluación e Historia Denominacional</p>
+    </footer>
+
+    <!-- Lógica JS Integrada -->
+    <script>
+        // Datos de las Fechas I, II y III
+        const historicalEvents = [
+            { year: 1852, text: "Jaime White editó la primera revista \"The Youth's Instructor\"." },
+            { year: 1879, text: "La primera Sociedad de Jóvenes (SJ) tuvo lugar en Hazelton, Michigan (EE. UU.), dirigida por los jóvenes Luther Warren y Harry Fenner." },
+            { year: 1907, text: "Se creó el Departamento de Jóvenes; luego se escogió el nombre de Sociedad de Misioneros Voluntarios de la Juventud del Séptimo Día, conocida como MV." },
+            { year: 1909, text: "Se organizó la Sociedad de Misioneros Voluntarios Junior (JMV)." },
+            { year: 1916, text: "Se realizó el primer censo: 1,230 Sociedades MV Junior y Senior con 24,638 miembros." },
+            { year: 1919, text: "Arthur W. Spalding organizó un pequeño grupo de chicos en Tennessee (EE. UU.) con el nombre de Misión Scouts; también escribió un voto y una ley que la Asociación General (AG) convirtió en oficiales en 1921." },
+            { year: 1922, text: "Spalding y Harriet M. Holt introdujeron las clases progresivas: amigo, compañero, camarada y camarada mayor de JMV, con actividades al aire libre." },
+            { year: 1927, text: "Da inicio al primer club de conquistadores en Anaheim, California, por John McKim y Willa Steen." },
+            { year: 1928, text: "Arthur Spalding y Harriet Holt escribieron las primeras 16 especialidades." },
+            { year: 1930, text: "Se desarrollan las clases de abejitas industriosas, rayos de sol, constructores y manos ayudadoras." },
+            { year: 1946, text: "John H. Hancock diseñó el triángulo emblema del Club de Conquistadores." },
+            { year: 1948, text: "Henry T. Berg, director juvenil de la Asociación Central de California, comenzó 23 clubes de conquistadores." },
+            { year: 1949, text: "Henry T. Berg escribió el himno de los Conquistadores." },
+            { year: 1950, text: "La AG autorizó establecer clubes de conquistadores JMV alrededor del mundo." },
+            { year: 1951, text: "La clase \"camarada\" fue cambiada a Guía, así como \"camarada mayor\" a Guía Mayor." },
+            { year: 1953, text: "Se lleva a cabo el primer camporee de conquistadores en Camp Winnekeag, Ashburnham, Massachusetts." },
+            { year: 1956, text: "Se añadió la clase explorador." },
+            { year: 1958, text: "L. A. Skinner desarrolló el Medallón de Plata para desafiar a la juventud adventista a ser los mejores en aptitud física y a ser excelentes cultural y espiritualmente." },
+            { year: 1959, text: "L. A. Skinner desarrolló el Medallón de Oro, con estándares más avanzados para jóvenes en edad universitaria." },
+            { year: 1965, text: "Se instituyó el programa de Castorcitos, luego se añadiría al club de aventureros." },
+            { year: 1966, text: "Se añadió la clase de pionero, que luego sería llamada orientador." },
+            { year: 1971, text: "Primer camporee a nivel división en la División África Occidental." },
+            { year: 1979, text: "Se cambiaron las siguientes denominaciones: MV pasó a ser JA, JMV a Conquistadores, y Pre-JMV a Aventureros." },
+            { year: 1982, text: "Se añadió la clase de viajero entre orientador y guía." },
+            { year: 1985, text: "Se llevó a cabo el primer camporee de la División Norteamericana en Camp Hale, Colorado." },
+            { year: 1989, text: "Se desarrolló el currículo de Guía Mayor Master, Liderazgo Conquistadores, Guía Mayor Master Avanzado e Instructor de Conquistadores." },
+            { year: 1991, text: "Se desarrolló el curso de entrenamiento básico para el personal del club de conquistadores." },
+            { year: 1992, text: "Se estableció un centro de evangelismo juvenil en la Universidad de Andrews." },
+            { year: 1994, text: "Se llevó a cabo el primer camporee internacional de la División Norteamericana en Morrison, Colorado." },
+            { year: 1999, text: "Camporee Internacional de Conquistadores en Oshkosh, Wisconsin: DESCUBRE EL PODER." },
+            { year: 2004, text: "Camporee Internacional de Conquistadores en Oshkosh, Wisconsin: FE EN FUEGO." },
+            { year: 2009, text: "Camporee Internacional de Conquistadores en Oshkosh, Wisconsin: VALOR PARA RESISTIR." },
+            { year: 2014, text: "Camporee Internacional de Conquistadores en Oshkosh, Wisconsin: SIEMPRE FIELES." },
+            { year: 2019, text: "Camporee Internacional de Conquistadores en Oshkosh, Wisconsin: ESCOGIDOS / Camporee DSA en Barretos." },
+            { year: 2020, text: "El club de guías mayores fue votado por la DNA como ministerio oficial / Pandemia mundial (clubes continuaron)." }
+        ];
+
+        let currentMode = 'decadas';
+        let userAnswers = {};
+
+        // Cambiar de modo
+        function switchMode(mode) {
+            currentMode = mode;
+            userAnswers = {};
+            
+            // Actualizar botones de la barra superior
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.className = "mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100";
+            });
+            
+            const activeBtn = document.getElementById(`btn-${mode}`);
+            activeBtn.className = "mode-btn flex items-center space-x-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-emerald-600 text-white shadow-sm";
+
+            renderCard();
+        }
+
+        // Renderizar el contenido según el modo activo
+        function renderCard() {
+            const card = document.getElementById('exam-card');
+            
+            if (currentMode === 'decadas') {
+                renderDecadasMode(card);
+            } else if (currentMode === 'relacionar') {
+                renderRelacionarMode(card);
+            } else if (currentMode === 'vf') {
+                renderVFMode(card);
+            } else if (currentMode === 'multiple') {
+                renderMultipleMode(card);
+            }
+        }
+
+        // --- MODO 1: AGRUPADO POR DÉCADAS ---
+        function renderDecadasMode(container) {
+            const decades = ["1850s", "1870s", "1900s", "1910s", "1920s", "1930s", "1940s", "1950s", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s", "2020s"];
+            
+            // Seleccionamos 8 eventos representativos para no abrumar al usuario
+            const sampleEvents = [
+                { id: 0, text: "Jaime White editó la primera revista \"The Youth's Instructor\".", correct: "1850s" },
+                { id: 1, text: "John H. Hancock diseñó el triángulo emblema del Club de Conquistadores.", correct: "1940s" },
+                { id: 2, text: "Se organizó la Sociedad de Misioneros Voluntarios Junior (JMV).", correct: "1900s" },
+                { id: 3, text: "L. A. Skinner desarrolló el Medallón de Plata y el de Oro.", correct: "1950s" },
+                { id: 4, text: "MV pasó a ser JA, JMV a Conquistadores, y Pre-JMV a Aventureros.", correct: "1970s" },
+                { id: 5, text: "Camporee Internacional de Conquistadores en Oshkosh: FE EN FUEGO.", correct: "2000s" },
+                { id: 6, text: "El club de guías mayores fue votado como ministerio oficial por la DNA.", correct: "2020s" },
+                { id: 7, text: "Se desarrollaron las clases de abejitas industriosas, rayos de sol, etc.", correct: "1930s" }
+            ];
+
+            let html = `
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Clasificación por Décadas</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mb-6">Selecciona la década correcta a la que pertenece cada uno de los siguientes acontecimientos históricos.</p>
+                <div class="space-y-6">
+            `;
+
+            sampleEvents.forEach((item, index) => {
+                html += `
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="text-sm sm:text-base font-semibold text-slate-800 mb-3">${index + 1}. ${item.text}</p>
+                        <select onchange="saveAnswer('decadas_${item.id}', this.value)" class="w-full sm:w-auto p-2.5 rounded-lg border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-emerald-500">
+                            <option value="">-- Seleccionar Década --</option>
+                            ${decades.map(d => `<option value="${d}" ${userAnswers[`decadas_${item.id}`] === d ? 'selected' : ''}>${d}</option>`).join('')}
+                        </select>
+                        <div id="feedback-decadas_${item.id}" class="mt-2 text-xs font-semibold"></div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button onclick="evaluateDecadas(${JSON.stringify(sampleEvents).replace(/"/g, '&quot;')})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-sm text-sm">
+                        Calificar Evaluación
+                    </button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function evaluateDecadas(items) {
+            let hits = 0;
+            items.forEach(item => {
+                const ans = userAnswers[`decadas_${item.id}`];
+                const feedbackDiv = document.getElementById(`feedback-decadas_${item.id}`);
+                if (ans === item.correct) {
+                    hits++;
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-emerald-600";
+                    feedbackDiv.innerText = "✓ ¡Correcto!";
+                } else {
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-rose-600";
+                    feedbackDiv.innerText = `✗ Incorrecto. Respuesta correcta: ${item.correct}`;
+                }
+            });
+            showScoreModal(hits, items.length);
+        }
+
+        // --- MODO 2: RELACIONAR FECHA Y ACONTECIMIENTO ---
+        function renderRelacionarMode(container) {
+            const samplePairs = [
+                { id: 'r1', year: 1879, text: "Primera Sociedad de Jóvenes en Hazelton, Michigan (Luther Warren y Harry Fenner)." },
+                { id: 'r2', year: 1919, text: "Arthur W. Spalding organizó la Misión Scouts en Tennessee." },
+                { id: 'r3', year: 1949, text: "Henry T. Berg escribió el himno de los Conquistadores." },
+                { id: 'r4', year: 1956, text: "Se añadió la clase de Explorador." },
+                { id: 'r5', year: 1999, text: "Camporee Internacional en Oshkosh: DESCUBRE EL PODER." }
+            ];
+
+            // Opciones desordenadas para los selects
+            const yearsOptions = [1879, 1919, 1949, 1956, 1999].sort(() => Math.random() - 0.5);
+
+            let html = `
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Relacionar Fecha y Acontecimiento</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mb-6">Selecciona el año correspondiente para cada acontecimiento histórico presentado.</p>
+                <div class="space-y-4">
+            `;
+
+            samplePairs.forEach((item, index) => {
+                html += `
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <span class="text-sm text-slate-800 font-medium">${index + 1}. ${item.text}</span>
+                        <select onchange="saveAnswer('${item.id}', this.value)" class="p-2 rounded-lg border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-emerald-500 shrink-0">
+                            <option value="">-- Año --</option>
+                            ${yearsOptions.map(y => `<option value="${y}" ${userAnswers[item.id] == y ? 'selected' : ''}>${y}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div id="feedback-${item.id}" class="text-xs font-semibold px-2 mb-2"></div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button onclick="evaluateRelacionar(${JSON.stringify(samplePairs).replace(/"/g, '&quot;')})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-sm text-sm">
+                        Calificar Evaluación
+                    </button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function evaluateRelacionar(items) {
+            let hits = 0;
+            items.forEach(item => {
+                const ans = userAnswers[item.id];
+                const feedbackDiv = document.getElementById(`feedback-${item.id}`);
+                if (parseInt(ans) === item.year) {
+                    hits++;
+                    feedbackDiv.className = "text-xs font-semibold text-emerald-600 px-2 mb-2";
+                    feedbackDiv.innerText = "✓ ¡Correcto!";
+                } else {
+                    feedbackDiv.className = "text-xs font-semibold text-rose-600 px-2 mb-2";
+                    feedbackDiv.innerText = `✗ Incorrecto. Año correcto: ${item.year}`;
+                }
+            });
+            showScoreModal(hits, items.length);
+        }
+
+        // --- MODO 3: VERDADERO O FALSO ---
+        function renderVFMode(container) {
+            const vfQuestions = [
+                { id: 'vf1', text: "En 1922, Spalding y Harriet M. Holt introdujeron las clases progresivas de JMV.", correct: true },
+                { id: 'vf2', text: "John H. Hancock diseñó el triángulo emblema de los Conquistadores en el año 1950.", correct: false, note: "Fue diseñado en 1946." },
+                { id: 'vf3', text: "En 1979, la denominación MV pasó a ser JA, JMV a Conquistadores y Pre-JMV a Aventureros.", correct: true },
+                { id: 'vf4', text: "El primer Camporee Internacional en Oshkosh, Wisconsin con el lema 'FE EN FUEGO' ocurrió en 1999.", correct: false, note: "En 1999 fue 'DESCUBRE EL PODER' y en 2004 fue 'FE EN FUEGO'." },
+                { id: 'vf5', text: "En 1958, L. A. Skinner desarrolló el Medallón de Plata.", correct: true }
+            ];
+
+            let html = `
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Verdadero o Falso</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mb-6">Lee atentamente cada afirmación e indica si es Verdadera (V) o Falsa (F).</p>
+                <div class="space-y-6">
+            `;
+
+            vfQuestions.forEach((item, index) => {
+                const currentAns = userAnswers[item.id];
+                html += `
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="text-sm font-semibold text-slate-800 mb-3">${index + 1}. ${item.text}</p>
+                        <div class="flex space-x-4">
+                            <button onclick="saveAnswer('${item.id}', true); renderCard();" class="px-4 py-1.5 rounded-lg border text-xs font-bold transition ${currentAns === true ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'}">
+                                Verdadero (V)
+                            </button>
+                            <button onclick="saveAnswer('${item.id}', false); renderCard();" class="px-4 py-1.5 rounded-lg border text-xs font-bold transition ${currentAns === false ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'}">
+                                Falso (F)
+                            </button>
+                        </div>
+                        <div id="feedback-${item.id}" class="mt-2 text-xs font-semibold"></div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button onclick="evaluateVF(${JSON.stringify(vfQuestions).replace(/"/g, '&quot;')})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-sm text-sm">
+                        Calificar Evaluación
+                    </button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function evaluateVF(items) {
+            let hits = 0;
+            items.forEach(item => {
+                const ans = userAnswers[item.id];
+                const feedbackDiv = document.getElementById(`feedback-${item.id}`);
+                if (ans === item.correct) {
+                    hits++;
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-emerald-600";
+                    feedbackDiv.innerText = "✓ ¡Correcto!";
+                } else {
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-rose-600";
+                    feedbackDiv.innerText = `✗ Incorrecto. ${item.note || ''}`;
+                }
+            });
+            showScoreModal(hits, items.length);
+        }
+
+        // --- MODO 4: OPCIÓN MÚLTIPLE ---
+        function renderMultipleMode(container) {
+            const mcQuestions = [
+                {
+                    id: 'mc1',
+                    question: "¿En qué año y lugar se llevó a cabo la primera Sociedad de Jóvenes (SJ)?",
+                    options: ["1852 en Washington", "1879 en Hazelton, Michigan", "1907 en California", "1916 en Tennessee"],
+                    correct: 1
+                },
+                {
+                    id: 'mc2',
+                    question: "¿Quiénes escribieron las primeras 16 especialidades en 1928?",
+                    options: ["Luther Warren y Harry Fenner", "John H. Hancock y Henry T. Berg", "Arthur Spalding y Harriet Holt", "John McKim y Willa Steen"],
+                    correct: 2
+                },
+                {
+                    id: 'mc3',
+                    question: "¿En qué año se añadió la clase de Viajero entre Orientador y Guía?",
+                    options: ["1966", "1971", "1982", "1991"],
+                    correct: 2
+                },
+                {
+                    id: 'mc4',
+                    question: "¿Cuál fue el lema del Camporee Internacional de Oshkosh en 2014?",
+                    options: ["FE EN FUEGO", "VALOR PARA RESISTIR", "SIEMPRE FIELES", "ESCOGIDOS"],
+                    correct: 2
+                }
+            ];
+
+            let html = `
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Opción Múltiple</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mb-6">Selecciona la respuesta correcta entre las cuatro opciones disponibles.</p>
+                <div class="space-y-6">
+            `;
+
+            mcQuestions.forEach((item, index) => {
+                const currentAns = userAnswers[item.id];
+                html += `
+                    <div class="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <p class="text-sm font-semibold text-slate-800 mb-3">${index + 1}. ${item.question}</p>
+                        <div class="space-y-2">
+                            ${item.options.map((opt, optIndex) => `
+                                <button onclick="saveAnswer('${item.id}', ${optIndex}); renderCard();" class="w-full text-left p-3 rounded-lg border text-xs sm:text-sm font-medium transition flex items-center space-x-3 ${currentAns === optIndex ? 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'}">
+                                    <span class="w-5 h-5 flex items-center justify-center rounded-full bg-slate-200 text-slate-600 text-xs font-bold">${String.fromCharCode(65 + optIndex)}</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div id="feedback-${item.id}" class="mt-2 text-xs font-semibold"></div>
+                    </div>
+                `;
+            });
+
+            html += `
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button onclick="evaluateMC(${JSON.stringify(mcQuestions).replace(/"/g, '&quot;')})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-sm text-sm">
+                        Calificar Evaluación
+                    </button>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        function evaluateMC(items) {
+            let hits = 0;
+            items.forEach(item => {
+                const ans = userAnswers[item.id];
+                const feedbackDiv = document.getElementById(`feedback-${item.id}`);
+                if (ans === item.correct) {
+                    hits++;
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-emerald-600";
+                    feedbackDiv.innerText = "✓ ¡Correcto!";
+                } else {
+                    feedbackDiv.className = "mt-2 text-xs font-semibold text-rose-600";
+                    feedbackDiv.innerText = `✗ Incorrecto. Respuesta correcta: ${item.options[item.correct]}`;
+                }
+            });
+            showScoreModal(hits, items.length);
+        }
+
+        // Guardar respuestas del usuario
+        function saveAnswer(key, val) {
+            userAnswers[key] = val;
+        }
+
+        // Mostrar resumen general de calificación
+        function showScoreModal(hits, total) {
+            const pct = Math.round((hits / total) * 100);
+            const msg = pct >= 80 ? "¡Excelente trabajo! Tienes un dominio sólido de las fechas históricas JA." : "Buen intento. Revisa nuevamente la lista de fechas para afianzar los conceptos.";
+            alert(`Puntaje obtenido: ${hits} / ${total} (${pct}%)\n\n${msg}`);
+        }
+
+        // Inicializar el examen en el primer modo
+        window.onload = function() {
+            renderCard();
+        };
+    </script>
+</body>
+</html>

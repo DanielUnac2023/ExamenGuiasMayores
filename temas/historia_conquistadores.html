@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluador de Historia de los Conquistadores · Guías Mayores</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+    <!-- Header Principal -->
+    <header class="bg-indigo-600 text-white shadow-md">
+      <div class="max-w-4xl mx-auto px-6 py-6 flex justify-between items-center">
+        <div>
+          <h1 class="text-xl md:text-2xl font-extrabold tracking-tight">Evaluador de Historia de los Conquistadores</h1>
+          <p class="text-indigo-100 text-xs md:text-sm mt-1">Guías Mayores & Conquistadores (Basado en documentos oficiales)</p>
+        </div>
+        <a
+          href="../index.html"
+          class="bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm"
+          >Volver al panel principal</a
+        >
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+      <!-- Indicador de Progreso por Secciones -->
+      <div class="mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <div class="flex justify-between text-xs md:text-sm font-semibold text-slate-600 mb-2">
+          <span id="section-counter-label">Sección 1 de 4</span>
+          <span id="section-title-label" class="text-indigo-600 font-bold">Cargando...</span>
+        </div>
+        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+          <div id="progress-bar" class="bg-indigo-600 h-2.5 transition-all duration-300" style="width: 25%"></div>
+        </div>
+      </div>
+
+      <!-- Contenedor Dinámico de Preguntas por Sección -->
+      <div id="exam-container" class="space-y-6">
+        <!-- Las preguntas de la sección activa se inyectarán aquí -->
+      </div>
+
+      <!-- Barra de Navegación de Secciones -->
+      <div class="flex justify-between items-center mt-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <button
+          id="prev-btn"
+          onclick="changeSection(-1)"
+          class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-medium py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+          disabled
+        >
+          ← Sección Anterior
+        </button>
+        <span id="section-status-text" class="text-xs font-semibold text-slate-500 hidden sm:inline"></span>
+        <button
+          id="next-btn"
+          onclick="changeSection(1)"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl text-sm transition shadow-sm"
+        >
+          Siguiente Sección →
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+      <p>Plataforma interactiva de repaso y evaluación para Guías Mayores[cite: 1, 2].</p>
+    </footer>
+
+    <script>
+      // Estructura de Secciones con validación instantánea por pregunta
+      const sections = [
+        {
+          s: "Sección 1: Comienzos y Pioneros Tempranos (1879-1930)",
+          desc: "Preguntas clave sobre las primeras sociedades juveniles, líderes fundadores y el desarrollo inicial.",
+          q: [
+            {
+              n: 1,
+              t: "¿Quién fue el primer director del departamento juvenil de la CG en 1907?",
+              o: ["L. A. Skinner", "M. E. Kern", "E. W. Dunbar", "J. H. Hancock"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.10)",
+            },
+            {
+              n: 2,
+              t: "¿Dónde se reunieron en 1907 líderes de iglesia y educación para nombrar a los 'Misioneros Voluntarios'?",
+              o: ["Mount Vernon, Ohio", "Santa Helena, California", "Nashville, Tennessee", "Lincoln, Nebraska"],
+              a: 0,
+              source: "Fuente: HistoriaConquis1 (p.10)",
+            },
+            {
+              n: 3,
+              t: "¿Qué edades abarcaba el programa de juveniles votado en Colorado en 1909?",
+              o: ["6-9 años", "10-15 años", "16-21 años", "12-18 años"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.10)",
+            },
+            {
+              n: 4,
+              t: "¿Cuál era el lema de las sociedades MV?",
+              o: ["'El amor de Cristo nos constriñe'", "'Sed fieles'", "'Siempre listos'", "'El mundo para Cristo'"],
+              a: 0,
+              source: "Fuente: HistoriaConquis1 (p.10)",
+            },
+            {
+              n: 5,
+              t: "¿Quién organizó en 1919 los Scouts de la Misión y escribió un voto y una ley base de los actuales?",
+              o: ["Charles Boyd", "Milton Robinson", "Arthur W. Spaulding", "Henry Bergh"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.11)",
+            },
+            {
+              n: 6,
+              t: "¿Quién preparó el Manual de Juveniles de 1918?",
+              o: ["Ella Iden-Edwards", "Matilda Erickson", "Harriet Maxson Holt", "Julia Nelson"],
+              a: 0,
+              source: "Fuente: HistoriaConquis1 (p.11)",
+            },
+            {
+              n: 7,
+              t: "¿Qué clases de JMV introdujo Harriet Maxson Holt?",
+              o: ["Guía y Guía Mayor", "Amigo y Compañero", "Explorador y Pionero", "Aventurero y Explorador"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.11)",
+            },
+          ],
+        },
+        {
+          s: "Sección 2: El Club de Conquistadores y Campamentos de Verano",
+          desc: "Evolución de los primeros clubes locales, campamentos históricos y el nacimiento del programa[cite: 63].",
+          q: [
+            {
+              n: 8,
+              t: "¿Qué programa, escrito por Henry T. Bergh, dirigió antes Skinner en la Unión del Pacífico Norte?",
+              o: ["Pathfinder Drum Corps", "Boys Pal", "Trailblazers", "Scouts de la Misión"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.14, p.18)",
+            },
+            {
+              n: 9,
+              t: "¿Dónde y cuándo hizo Grover Fattic su primer campamento de verano?",
+              o: ["Idyllwild, 1954", "Townline Lake, Michigan, 1926", "Julian, 1928", "Wawona, 1927"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.15, p.38)",
+            },
+            {
+              n: 10,
+              t: "¿Qué debía haber completado un niño para asistir a esos primeros campamentos de menores?",
+              o: ["La clase Amigos", "La clase Guía", "Una especialidad", "El Voto de Conquistador"],
+              a: 0,
+              source: "Fuente: HistoriaConquis1 (p.15)",
+            },
+            {
+              n: 11,
+              t: "¿Qué nombre adoptaron los países de habla hispana para el programa oficial?",
+              o: ["Desbravadores", "Eclair", "Conquistadores", "Pioneros"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.27)",
+            },
+            {
+              n: 12,
+              t: "¿Quién fue el primer Director Mundial de Conquistadores?",
+              o: ["John H. Hancock", "Eldine W. Dunbar", "Leo S. Ranzolin", "Laurence A. Skinner"],
+              a: 3,
+              source: "Fuente: HistoriaConquis1 (p.33)",
+            },
+            {
+              n: 13,
+              t: "¿Qué instrumento musical llevaba Hancock en sus giras mundiales?",
+              o: ["Guitarra", "Acordeón", "Trompeta", "Tambor"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.33)",
+            },
+          ],
+        },
+        {
+          s: "Sección 3: Oficialización Mundial y Eventos Históricos",
+          desc: "Aprobación de la Conferencia General, ferias, camporís y proyectos destacados como el Desfile de las Rosas[cite: 63].",
+          q: [
+            {
+              n: 14,
+              t: "¿Qué evento reunió a 15,000 asistentes en 1985 bajo el liderazgo de Les Pitton?",
+              o: ["Dare to Care", "Camporí de la Amistad", "Primer camporí de la DNA en Camp Hale", "Camporí de Suiza"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.28-29)",
+            },
+            {
+              n: 15,
+              t: "¿Qué trofeo ganó la primera carroza adventista ('Jugando en Paz') en el Desfile de las Rosas de Pasadena en 1991?",
+              o: ["Queen's Award", "Lathrop K. Leishman Award", "President's Award", "Isabel Coleman Award"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.30)",
+            },
+            {
+              n: 16,
+              t: "¿Cuántas rosas se estima que tenía la carroza adventista, cuyas flores luego se convirtieron en potpurrí?",
+              o: ["4,000", "14,000", "40,000", "400,000"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.31)",
+            },
+            {
+              n: 17,
+              t: "¿A qué organización benéfica se donaron los ingresos obtenidos del potpurrí de rosas?",
+              o: ["ADRA", "Children's Miracle Network", "Cruz Roja Internacional", "UNICEF"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.31)",
+            },
+            {
+              n: 18,
+              t: "¿Por qué razón no hubo carroza adventista en el Desfile de las Rosas de 1994?",
+              o: [
+                "Falta de presupuesto",
+                "El día del desfile cayó en sábado",
+                "Malas condiciones climáticas",
+                "Cancelación definitiva del evento",
+              ],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.31)",
+            },
+          ],
+        },
+        {
+          s: "Sección 4: Líderes Mundiales y de la División Norteamericana",
+          desc: "Revisión de los directores mundiales y regionales que lideraron el ministerio a lo largo de las décadas[cite: 63].",
+          q: [
+            {
+              n: 19,
+              t: "¿Quién fue el cuarto Director del Ministerio Juvenil de la División Norteamericana (DNA) designado en el año 2000?",
+              o: ["Willie Oliver", "Norm Middag", "James Black", "Les Pitton"],
+              a: 2,
+              source: "Fuente: HistoriaConquis1 (p.35)",
+            },
+            {
+              n: 20,
+              t: "Falso o Verdadero: El programa y emblema de los Conquistadores es universal, adaptando solo nombres locales como 'Desbravadores' o 'Eclair'[cite: 63].",
+              o: ["Falso", "Verdadero"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.27)",
+            },
+            {
+              n: 21,
+              t: "Falso o Verdadero: Arnold y Dixie Plata son reconocidos en la historia por poseer la colección más grande del mundo de memorabilia de MV y Conquistadores[cite: 63].",
+              o: ["Falso", "Verdadero"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.31-32)",
+            },
+            {
+              n: 22,
+              t: "¿Quién sucedió a Laurence Skinner como segundo Director Mundial de Conquistadores en 1963?",
+              o: ["Mike Stevenson", "John H. Hancock", "Robert Holbrook", "Malcolm Allen"],
+              a: 1,
+              source: "Fuente: HistoriaConquis1 (p.33)",
+            },
+          ],
+        },
+      ];
+
+      let currentSectionIndex = 0;
+      let userAnswers = {}; // Almacena selecciones de usuario por clave única
+
+      const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+      function renderSection() {
+        const sec = sections[currentSectionIndex];
+        const container = document.getElementById("exam-container");
+
+        // Actualizar indicadores visuales de sección
+        document.getElementById("section-counter-label").innerText = `Sección ${currentSectionIndex + 1} de ${sections.length}`;
+        document.getElementById("section-title-label").innerText = sec.s;
+        const pct = ((currentSectionIndex + 1) / sections.length) * 100;
+        document.getElementById("progress-bar").style.width = `${pct}%`;
+
+        // Control de botones de navegación
+        document.getElementById("prev-btn").disabled = currentSectionIndex === 0;
+        const nextBtn = document.getElementById("next-btn");
+        if (currentSectionIndex === sections.length - 1) {
+          nextBtn.innerText = "Ver Resumen Final →";
+        } else {
+          nextBtn.innerText = "Siguiente Sección →";
+        }
+
+        let html = `
+            <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mb-6">
+                <h2 class="text-base md:text-lg font-bold text-indigo-900">${sec.s}</h2>
+                <p class="text-xs text-indigo-700 mt-1">${sec.desc}</p>
+            </div>
+        `;
+
+        sec.q.forEach((q, qi) => {
+          const uniqueKey = `sec_${currentSectionIndex}_q_${qi}`;
+          const saved = userAnswers[uniqueKey]; // { sel: oi, isCorrect: boolean }
+
+          html += `
+            <div id="card_${uniqueKey}" class="bg-white rounded-2xl shadow-sm border ${saved ? (saved.isCorrect ? "border-emerald-300 bg-emerald-50/20" : "border-rose-300 bg-rose-50/20") : "border-slate-200"} p-6 md:p-7 mb-6 transition-all">
+                <div class="inline-block bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full mb-3">
+                    Pregunta #${q.n}
+                </div>
+                <p class="text-base font-bold text-slate-900 mb-4 leading-snug">
+                    ${esc(q.t)}
+                </p>
+                <div class="space-y-2.5">
+            `;
+
+          q.o.forEach((opt, oi) => {
+            let btnStyle = "border-slate-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/40 text-slate-700";
+            let isDisabled = "";
+
+            if (saved !== undefined) {
+              isDisabled = "disabled";
+              if (oi === q.a) {
+                btnStyle = "border-emerald-500 bg-emerald-100 text-emerald-900 font-semibold";
+              } else if (oi === saved.sel) {
+                btnStyle = "border-rose-500 bg-rose-100 text-rose-900 font-semibold";
+              } else {
+                btnStyle = "border-slate-200 bg-slate-50 text-slate-400 opacity-60";
+              }
+            }
+
+            html += `
+                    <button class="w-full text-left p-3.5 rounded-xl border text-sm font-medium transition flex items-start gap-3 ${btnStyle}" ${isDisabled} onclick="checkAnswer(${currentSectionIndex}, ${qi}, ${oi})">
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-slate-200 text-slate-700 text-xs font-bold shrink-0">${"ABCD"[oi]}</span>
+                        <span>${esc(opt)}</span>
+                    </button>
+                `;
+          });
+
+          html += `</div>`;
+
+          // Retroalimentación instantánea si ya respondió
+          if (saved !== undefined) {
+            html += `
+                    <div class="mt-4 p-3.5 rounded-xl text-xs md:text-sm font-medium ${saved.isCorrect ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-rose-50 text-rose-800 border border-rose-200"} flex flex-col gap-1">
+                        <div>${saved.isCorrect ? "✔ ¡Correcto!" : "✘ Incorrecto. La respuesta correcta era la opción <b>" + "ABCD"[q.a] + "</b>."}</div>
+                        <div class="text-slate-500 text-xs italic mt-0.5">${esc(q.source)}</div>
+                    </div>
+                `;
+          }
+
+          html += `</div>`;
+        });
+
+        container.innerHTML = html;
+      }
+
+      function checkAnswer(secIdx, qIdx, selectedOptionIndex) {
+        const uniqueKey = `sec_${secIdx}_q_${qIdx}`;
+        const question = sections[secIdx].q[qIdx];
+        const isCorrect = selectedOptionIndex === question.a;
+
+        userAnswers[uniqueKey] = {
+          sel: selectedOptionIndex,
+          isCorrect: isCorrect,
+        };
+
+        renderSection();
+      }
+
+      function changeSection(dir) {
+        if (dir === 1 && currentSectionIndex < sections.length - 1) {
+          currentSectionIndex++;
+          renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (dir === -1 && currentSectionIndex > 0) {
+          currentSectionIndex--;
+          renderSection();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else if (currentSectionIndex === sections.length - 1 && dir === 1) {
+          showGlobalSummary();
+        }
+      }
+
+      function showGlobalSummary() {
+        let totalQuestions = 0;
+        let totalCorrect = 0;
+
+        sections.forEach((sec, si) => {
+          sec.q.forEach((q, qi) => {
+            totalQuestions++;
+            const uniqueKey = `sec_${si}_q_${qi}`;
+            if (userAnswers[uniqueKey] && userAnswers[uniqueKey].isCorrect) {
+              totalCorrect++;
+            }
+          });
+        });
+
+        const pct = Math.round((totalCorrect / totalQuestions) * 100);
+
+        document.getElementById("exam-container").innerHTML = `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center">
+                <div class="text-5xl mb-3">🏆</div>
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-2">¡Evaluación de Historia Concluida!</h2>
+                <p class="text-slate-500 text-sm mb-6">Resumen general de tu puntaje en todas las secciones.</p>
+                
+                <div class="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 font-extrabold text-4xl px-8 py-5 rounded-2xl border border-indigo-100 mb-6">
+                    ${totalCorrect} / ${totalQuestions} <span class="text-xl text-indigo-400 font-normal ml-2">(${pct}%)</span>
+                </div>
+
+                <p class="text-base font-semibold mb-6 ${pct >= 80 ? "text-emerald-600" : pct >= 60 ? "text-amber-600" : "text-rose-600"}">
+                    ${pct >= 80 ? "¡Excelente conocimiento de la historia de los Conquistadores!" : "Buen esfuerzo. Puedes regresar a repasar las secciones anteriores."}
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="currentSectionIndex=0; renderSection();" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition text-sm shadow-sm">
+                        Repasar Secciones Nuevamente
+                    </button>
+                    <a href="../index.html" class="bg-white hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-6 rounded-xl border border-slate-300 transition text-sm shadow-sm inline-block">
+                        Volver al panel principal
+                    </a>
+                </div>
+            </div>
+        `;
+
+        document.getElementById("prev-btn").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("section-counter-label").innerText = "Calificación Final";
+        document.getElementById("section-title-label").innerText = "Completado";
+        document.getElementById("progress-bar").style.width = `100%`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Inicializar cargando la primera sección al abrir la página
+      renderSection();
+    </script>
+  </body>
+</html>
