@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plataforma de Repaso y Evaluación - Guías y Conquistadores</title>
+    <!-- Tailwind CSS CDN para un diseño moderno y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+    <!-- Header -->
+    <header class="bg-indigo-600 text-white shadow-md">
+      <div class="max-w-5xl mx-auto px-6 py-8 text-center">
+        <h1 class="text-3xl font-extrabold tracking-tight">Centro de Repaso y Evaluación</h1>
+        <p class="mt-2 text-indigo-100 text-sm md:text-base">
+          Herramientas interactivas para el aprendizaje y cumplimiento de requisitos
+        </p>
+      </div>
+    </header>
+
+    <!-- Main Content / Tarjetas de Temas -->
+    <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
+      <h2 class="text-xl font-bold text-slate-700 mb-6 border-b pb-2">Selecciona un tema para repasar:</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Tema 1: 28 Creencias -->
+        <div
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-slate-200 p-6 flex flex-col justify-between"
+        >
+          <div>
+            <div
+              class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4"
+            >
+              📖
+            </div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">28 Creencias Fundamentales</h3>
+            <p class="text-sm text-slate-600 mb-4">
+              Evalúa tu conocimiento agrupando, ordenando y relacionando las creencias con sus doctrinas.
+            </p>
+          </div>
+          <a
+            href="temas/28-creencias.html"
+            class="inline-block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
+            >Abrir Módulo</a
+          >
+        </div>
+
+        <!-- Tema 2: Liderazgo y Seminarios -->
+        <div
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-slate-200 p-6 flex flex-col justify-between"
+        >
+          <div>
+            <div
+              class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4"
+            >
+              👥
+            </div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">Liderazgo y Seminarios</h3>
+            <p class="text-sm text-slate-600 mb-4">
+              Repaso de los módulos de liderazgo, comunicación, creatividad y evangelismo infantil.
+            </p>
+          </div>
+          <a
+            href="temas/liderazgos.html"
+            class="inline-block text-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
+            >Abrir Módulo</a
+          >
+        </div>
+
+        <!-- Tema 3: Clase de Viajero -->
+        <div
+          class="bg-white rounded-xl shadow-sm hover:shadow-md transition border border-slate-200 p-6 flex flex-col justify-between"
+        >
+          <div>
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold text-xl mb-4">
+              🧭
+            </div>
+            <h3 class="font-bold text-lg text-slate-900 mb-2">Clase de Viajero</h3>
+            <p class="text-sm text-slate-600 mb-4">
+              Requisitos, dosificación curricular y guías prácticas para el desarrollo de la clase.
+            </p>
+          </div>
+          <a
+            href="temas/clase-viajero.html"
+            class="inline-block text-center bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-4 rounded-lg transition text-sm"
+            >Abrir Módulo</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+      <p>Plataforma educativa diseñada para apoyo de Guías Mayores y Conquistadores.</p>
+    </footer>
+  </body>
+</html>
