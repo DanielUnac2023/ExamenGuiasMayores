@@ -2,78 +2,153 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Simulador Examen General de Investidura JA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examen General de Investidura JA – Simulador</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
-        font-family: system-ui, sans-serif;
-        max-width: 760px;
-        margin: 0 auto;
-        padding: 16px;
-        line-height: 1.45;
-        color: #222;
-      }
-      h1 {
-        font-size: 1.3rem;
-      }
-      h2 {
-        font-size: 1.1rem;
-        margin-top: 28px;
-        border-bottom: 2px solid #1f4e8c;
-        color: #1f4e8c;
-      }
-      .q {
-        margin: 14px 0;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-      }
-      .q p {
-        margin: 0 0 6px;
-        font-weight: 600;
-      }
-      label {
-        display: block;
-        padding: 3px 0;
-        cursor: pointer;
-      }
-      .ok {
-        background: #e6f6e6;
-        border-color: #4caf50;
-      }
-      .bad {
-        background: #fdeaea;
-        border-color: #e53935;
-      }
-      .fb {
-        font-size: 0.9rem;
-        margin-top: 6px;
-      }
-      button {
-        background: #1f4e8c;
-        color: #fff;
-        border: 0;
-        padding: 10px 18px;
-        border-radius: 6px;
-        font-size: 1rem;
-        cursor: pointer;
-        margin-right: 8px;
-      }
-      #res {
-        font-size: 1.2rem;
-        font-weight: 700;
-        margin: 16px 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          sans-serif;
       }
     </style>
   </head>
-  <body>
-    <h1>Examen General de Investidura JA – Simulador</h1>
-    <div id="exam"></div>
-    <button onclick="grade()">Calificar</button><button onclick="location.reload()">Reiniciar</button>
-    <div id="res"></div>
+  <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+    <!-- Header Principal -->
+    <header class="bg-indigo-600 text-white shadow-md">
+      <div class="max-w-4xl mx-auto px-6 py-6 flex space-x-6 items-center">
+        <div>
+          <h1 class="text-2xl font-extrabold tracking-tight">Simulador Examen General de Investidura JA</h1>
+          <p class="text-indigo-100 text-xs md:text-sm mt-1">Evaluación organizada por secciones temáticas</p>
+        </div>
+        <a
+          href="../index.html"
+          class="bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm"
+          >Menú Principal</a
+        >
+        <button
+          onclick="location.reload()"
+          class="bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm"
+        >
+          Reiniciar
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+      <!-- Indicador de Progreso por Secciones -->
+      <div class="mb-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <div class="flex justify-between text-xs md:text-sm font-semibold text-slate-600 mb-2">
+          <span id="section-counter-label">Sección 1 de 6</span>
+          <span id="section-title-label" class="text-indigo-600 font-bold">Cargando...</span>
+        </div>
+        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+          <div id="progress-bar" class="bg-indigo-600 h-2.5 transition-all duration-300" style="width: 16.6%"></div>
+        </div>
+      </div>
+
+      <!-- Contenedor Dinámico de Preguntas por Sección -->
+      <div id="exam-container" class="space-y-6">
+        <!-- Las preguntas de la sección activa se inyectarán aquí -->
+      </div>
+
+      <!-- Barra de Navegación de Secciones -->
+      <div class="flex justify-between items-center mt-8 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+        <button
+          id="prev-btn"
+          onclick="changeSection(-1)"
+          class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 font-medium py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
+          disabled
+        >
+          ← Sección Anterior
+        </button>
+        <span id="section-status-text" class="text-xs font-semibold text-slate-500 hidden sm:inline"></span>
+        <button
+          id="next-btn"
+          onclick="changeSection(1)"
+          class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-5 rounded-xl text-sm transition shadow-sm"
+        >
+          Siguiente Sección →
+        </button>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+      <p>Plataforma interactiva para Guías Mayores y Conquistadores.</p>
+    </footer>
+
     <script>
       const T = ["Falso", "Verdadero"];
-      const S = [
+      const M = [
+        "Ellen G. de White",
+        "James Springer White (1821-1881)",
+        "John Nevins Andrews (1829-1883)",
+        "Primera junta de la AGIASD",
+        "Daniel y Apocalipsis",
+        "1888",
+      ];
+
+      const sections = [
+        {
+          s: "Sección I: Preguntas abiertas (autoevaluación)",
+          q: [
+            {
+              n: 1,
+              t: "Escribe 5 puntos que se deban emplear para atraer a los jóvenes y niños a la iglesia.",
+              k: "Programas atractivos y dinámicos; actividades al aire libre y campamentos; amistad y buen trato; servicio a la comunidad; líderes que den buen ejemplo; participación activa de los jóvenes; trabajo con las familias.",
+            },
+            {
+              n: 2,
+              t: "Describe brevemente los pasos para organizar un club de Conquistadores.",
+              k: "1) Obtener el aval de la iglesia (junta/pastor). 2) Coordinar con el Departamento de Jóvenes de la Asociación o Misión. 3) Nombrar director y equipo de liderazgo. 4) Capacitar al personal (Guías Mayores). 5) Informar e inscribir a niños y padres. 6) Organizar unidades con consejeros. 7) Planear el programa anual, presupuesto y uniformes. 8) Registrar el club y realizar la investidura.",
+            },
+            {
+              n: 3,
+              t: "Escribe al menos tres fuentes de ingresos de un club.",
+              k: "Cuotas de inscripción y mensualidades; aporte del presupuesto de la iglesia; ofrendas y donaciones; ventas y campañas de recaudación; eventos y proyectos especiales.",
+            },
+            {
+              n: 4,
+              t: "¿Cuáles son las razones principales por las que no se deberían inscribir niños con edad inferior?",
+              k: "Su desarrollo físico, mental y emocional no corresponde a los requisitos y actividades del club; pueden frustrarse o ponerse en riesgo en caminatas y campamentos; reciben mejor atención en Aventureros; y se altera el orden y la seguridad de las unidades.",
+            },
+            {
+              n: 6,
+              t: "Describe las principales características que debe tener un consejero.",
+              k: "Vida cristiana ejemplar; amor y paciencia con los niños; responsabilidad y puntualidad; mayor de 18 años y, si es posible, Guía Mayor; capacidad de enseñar y motivar; trabajo en equipo; cuidado de la seguridad de los menores.",
+            },
+            {
+              n: 10,
+              t: "Escribe el voto de los Conquistadores.",
+              k: "«Por la gracia de Dios, seré puro, bondadoso y leal. Guardaré la Ley del Conquistador. Seré siervo de Dios y amigo de todos.»",
+            },
+            {
+              n: 11,
+              t: "Escribe la ley de los Conquistadores.",
+              k: "La Ley del Conquistador me ordena: 1) Observar la devoción matinal. 2) Cumplir fielmente la parte que me corresponde. 3) Cuidar mi cuerpo. 4) Mantener una mirada franca. 5) Ser cortés y obediente. 6) Andar con reverencia en la casa de Dios. 7) Tener siempre un canto en el corazón. 8) Ir adonde Dios mande.",
+            },
+            {
+              n: 12,
+              t: "Escribe 5 valores de la ley de los Aventureros.",
+              k: "Yo puedo ser: obediente, puro, sincero, bondadoso, respetuoso, atento, servicial y alegre (basta con cinco).",
+            },
+            {
+              n: 13,
+              t: "Escribe los nombres de los dos pioneros que iniciaron el movimiento juvenil en 1879.",
+              k: "Luther Warren (14 años) y Harry Fenner (17 años), en Hazelton, Michigan.",
+            },
+          ],
+        },
         {
           s: "Sección II: Selección múltiple",
           q: [
@@ -99,7 +174,6 @@
                 "Niños y niñas que tengan nueve años o más y/o cursen quinto grado.",
               ],
               a: [2],
-              r: 1,
             },
             {
               n: 17,
@@ -110,8 +184,7 @@
                 "Niños y niñas de 6 a 10 años.",
                 "Niños y niñas hasta los 9 años.",
               ],
-              a: [3],
-              r: 1,
+              a: [1],
             },
             {
               n: 18,
@@ -123,7 +196,6 @@
                 "Los padres.",
               ],
               a: [3],
-              r: 1,
             },
             {
               n: 19,
@@ -156,7 +228,6 @@
                 "Todas las anteriores.",
               ],
               a: [3],
-              r: 1,
             },
             {
               n: 22,
@@ -168,7 +239,6 @@
                 "En excursiones e investiduras.",
               ],
               a: [2],
-              r: 1,
             },
             {
               n: 23,
@@ -179,7 +249,7 @@
                 "El mensaje de los tres ángeles.",
                 "Ninguna de las anteriores.",
               ],
-              a: [2],
+              a: [0],
             },
           ],
         },
@@ -187,21 +257,19 @@
           s: "Sección III: Falso o verdadero",
           q: [
             { n: 26, t: "Ningún miembro llevará las insignias del club a menos que vista el uniforme completo.", o: T, a: [1] },
-            { n: 27, t: "Los únicos que pueden investir son los Guías Mayores investidos.", o: T, a: [1], r: 1 },
+            { n: 27, t: "Los únicos que pueden investir son los Guías Mayores investidos.", o: T, a: [1] },
             {
               n: 28,
               t: "La Barra de «Buena Conducta» se le da de por vida al Guía Mayor y se somete a prueba al Conquistador.",
               o: T,
-              a: [0],
-              r: 1,
+              a: [1],
             },
             { n: 29, t: "Una ventaja de las actividades manuales es que no necesitan mucha preparación.", o: T, a: [0] },
             {
               n: 30,
               t: "Una característica del desarrollo cognitivo del Aventurero es que posee pensamiento lógico.",
               o: T,
-              a: [0],
-              r: 1,
+              a: [1],
             },
             { n: 31, t: "Se deben evitar las ilustraciones gráficas en las enseñanzas de las especialidades.", o: T, a: [0] },
             {
@@ -224,6 +292,44 @@
           s: "Sección IV: Historia denominacional",
           q: [
             {
+              n: 36,
+              t: "¿Quién fue el más prominente predicador americano de la Segunda venida de Cristo?",
+              k: "William Miller.",
+            },
+            {
+              n: 37,
+              t: "¿Qué profecía estudió Miller para fijar una fecha al regreso de Cristo? Enuncia las dos fechas clave.",
+              k: "Daniel 8:14 (los 2300 días/años). Fechas clave: 457 a.C. (decreto de Artajerjes, inicio) y 1844 d.C. (fin; 22 de octubre de 1844).",
+            },
+            {
+              n: 38,
+              t: "¿Qué visión tuvo Hiram Edson que le ayudó a aclarar el problema del gran chasco?",
+              k: "El 23 de octubre de 1844, en un maizal, vio que Cristo no vino a la Tierra sino que entró al lugar santísimo del santuario celestial para iniciar la fase final de su ministerio.",
+            },
+            {
+              n: 39,
+              t: "¿Cuál es la primera visión que recibe Elena G. de White y cuántos años tenía?",
+              k: "En diciembre de 1844 (Portland, Maine) vio al pueblo adventista caminando por un sendero elevado hacia la ciudad de Dios. Tenía 17 años.",
+            },
+            {
+              n: 40,
+              t: "¿Cómo se llamaban los dos primeros profetas llamados por Dios antes de Elena G. de White?",
+              k: "William Foy y Hazen Foss.",
+            },
+            { n: 41, t: "¿Cómo se conoce a los escritos de Elena G. de White?", k: "Espíritu de Profecía." },
+            {
+              n: "42.1",
+              t: "Relaciona: Escribió las primeras lecciones de Escuela Sabática; sus comienzos de escritor fueron folletos como La Verdad Presente (The Present Truth).",
+              o: M,
+              a: [0],
+            },
+            { n: "42.2", t: "Relaciona: Fue presidente durante un total de 10 años de la AGIASD.", o: M, a: [1] },
+            { n: "42.3", t: "Relaciona: Alentó la organización de la iglesia en sus comienzos.", o: M, a: [1] },
+            { n: "42.4", t: "Relaciona: Primer misionero oficial a ultramar de la Iglesia A.S.D.", o: M, a: [2] },
+            { n: "42.5", t: "Relaciona: Pr. John Byington (1798-1887) en lugar del Pr. White. 1863.", o: M, a: [3] },
+            { n: "42.6", t: "Relaciona: Uriah Smith (1832-1903).", o: M, a: [4] },
+            { n: "42.7", t: "Relaciona: Congreso más importante de la IASD.", o: M, a: [5] },
+            {
               n: 43,
               t: "¿En qué año fue adoptado oficialmente el club de Conquistadores?",
               o: ["1886", "1890", "1950", "Ninguno de los anteriores"],
@@ -245,7 +351,7 @@
               n: 45,
               t: "¿Primer capitán del navío Pitcairn?",
               o: ["El Hno. John Tay", "J.N. Andrews", "Uriah Smith", "Ninguno de los anteriores"],
-              a: [0],
+              a: [3],
             },
             {
               n: 46,
@@ -253,7 +359,6 @@
               o: ["Milton Kern", "Luther Warren", "Arthur W. Spaulding", "John Hancock", "Ninguno de los anteriores"],
               a: [0, 1, 2],
               m: 1,
-              r: 1,
             },
             {
               n: 47,
@@ -268,7 +373,7 @@
               o: T,
               a: [1],
             },
-            { n: 50, t: "Warren fue el primer Director asociado de Jóvenes de la Asociación General.", o: T, a: [0], r: 1 },
+            { n: 50, t: "Warren fue el primer Director asociado de Jóvenes de la Asociación General.", o: T, a: [1] },
             {
               n: 51,
               t: "Luther Warren (14 años) junto a Harry Fenner (17) iniciaron el movimiento juvenil en 1879.",
@@ -282,40 +387,190 @@
             { n: 57, t: "El mensaje del segundo ángel declara la caída de la Babilonia espiritual.", o: T, a: [1] },
           ],
         },
+        {
+          s: "Sección VI: Especialidades",
+          q: [
+            {
+              n: 59,
+              t: "Escribe el motivo principal por el cual se desarrollan las especialidades.",
+              k: "Para que el joven descubra y desarrolle habilidades, pasatiempos y conocimientos útiles que enriquezcan su vida, lo preparen para servir a otros y lo acerquen a Dios a través de la naturaleza y el trabajo.",
+            },
+            {
+              n: 60,
+              t: "¿Qué significa poder alcanzar una maestría?",
+              k: "Completar un grupo de especialidades relacionadas de una misma área (por ejemplo, naturaleza o artes manuales), lo que demuestra un dominio amplio de ese campo y se reconoce con la insignia de Maestría.",
+            },
+            {
+              n: "Gracia",
+              t: "¿Para qué es la barra de buena conducta?",
+              k: "Para reconocer el logro individual y la buena conducta sostenida durante un año; cada año adicional se señala con una estrella dorada.",
+            },
+          ],
+        },
       ];
-      const ex = document.getElementById("exam");
-      let all = [];
-      S.forEach((sec, si) => {
-        ex.insertAdjacentHTML("beforeend", `<h2>${sec.s}</h2>`);
+
+      let currentSectionIndex = 0;
+      let userAnswers = {};
+
+      const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+      function renderSection() {
+        const sec = sections[currentSectionIndex];
+        const container = document.getElementById("exam-container");
+
+        // Actualizar barra e indicadores
+        document.getElementById("section-counter-label").innerText = `Sección ${currentSectionIndex + 1} de ${sections.length}`;
+        document.getElementById("section-title-label").innerText = sec.s;
+        const pct = ((currentSectionIndex + 1) / sections.length) * 100;
+        document.getElementById("progress-bar").style.width = `${pct}%`;
+
+        // Botones de navegación
+        document.getElementById("prev-btn").disabled = currentSectionIndex === 0;
+        const nextBtn = document.getElementById("next-btn");
+        if (currentSectionIndex === sections.length - 1) {
+          nextBtn.innerText = "Calificar / Finalizar →";
+        } else {
+          nextBtn.innerText = "Siguiente Sección →";
+        }
+
+        let html = `
+            <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 mb-6">
+                <h2 class="text-base md:text-lg font-bold text-indigo-900">${sec.s}</h2>
+                <p class="text-xs text-indigo-700 mt-1">Responde las preguntas de este apartado y avanza cuando estés listo.</p>
+            </div>
+        `;
+
         sec.q.forEach((q, qi) => {
-          q.id = `q${si}_${qi}`;
-          all.push(q);
-          const ty = q.m ? "checkbox" : "radio";
-          const opts = q.o.map((o, i) => `<label><input type="${ty}" name="${q.id}" value="${i}"> ${o}</label>`).join("");
-          ex.insertAdjacentHTML(
-            "beforeend",
-            `<div class="q" id="${q.id}"><p>${q.n}. ${q.t}</p>${opts}<div class="fb"></div></div>`,
-          );
+          const uniqueKey = `sec_${currentSectionIndex}_q_${qi}`;
+          const saved = userAnswers[uniqueKey];
+
+          html += `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-7 mb-6">
+                <div class="inline-block bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full mb-3">
+                    Pregunta #${q.n}
+                </div>
+                <p class="text-base font-bold text-slate-900 mb-4 leading-snug">
+                    ${esc(q.t)}
+                </p>
+            `;
+
+          if (q.k) {
+            // Pregunta Abierta
+            html += `
+                    <textarea id="ta_${uniqueKey}" class="w-full p-4 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-slate-800 text-sm mb-3 min-h-[100px] bg-slate-50" placeholder="Escribe tu respuesta..." oninput="saveOpen('${uniqueKey}')">${saved ? esc(saved.txt || "") : ""}</textarea>
+                    <details class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-700">
+                        <summary class="cursor-pointer font-bold text-indigo-600">Ver respuesta modelo</summary>
+                        <p class="mt-2 italic">${esc(q.k)}</p>
+                    </details>
+                `;
+          } else {
+            // Pregunta Cerrada (Radio o Checkbox)
+            const isCheck = q.m ? true : false;
+            const ty = isCheck ? "checkbox" : "radio";
+
+            html += `<div class="space-y-2.5">`;
+            q.o.forEach((opt, oi) => {
+              let isChecked = false;
+              if (saved) {
+                if (isCheck) isChecked = saved.sel.includes(oi);
+                else isChecked = saved.sel === oi;
+              }
+
+              html += `
+                    <label class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 hover:bg-indigo-50/40 cursor-pointer transition text-sm">
+                        <input type="${ty}" name="${uniqueKey}" value="${oi}" ${isChecked ? "checked" : ""} onchange="saveClosed('${uniqueKey}', ${qi}, ${isCheck})" class="mt-0.5 text-indigo-600 focus:ring-indigo-500">
+                        <span class="text-slate-700 font-medium">${esc(opt)}</span>
+                    </label>`;
+            });
+            html += `</div>`;
+          }
+
+          html += `</div>`;
         });
-      });
-      function grade() {
-        let ok = 0;
-        all.forEach((q) => {
-          const box = document.getElementById(q.id);
-          const sel = [...box.querySelectorAll("input:checked")]
-            .map((x) => +x.value)
-            .sort()
-            .join();
-          const good = q.a.slice().sort().join() === sel;
-          if (good) ok++;
-          box.className = "q " + (good ? "ok" : "bad");
-          box.querySelector(".fb").textContent =
-            (good ? "Correcta" : "Incorrecta. Respuesta: " + q.a.map((i) => q.o[i]).join(" / ")) +
-            (q.r ? " (clave por confirmar con tu manual)" : "");
-        });
-        document.getElementById("res").textContent = `Resultado: ${ok} / ${all.length} (${Math.round((ok / all.length) * 100)}%)`;
-        window.scrollTo(0, document.body.scrollHeight);
+
+        container.innerHTML = html;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
+
+      function saveOpen(key) {
+        const val = document.getElementById(`ta_${key}`).value;
+        userAnswers[key] = { txt: val };
+      }
+
+      function saveClosed(key, qi, isCheck) {
+        const inputs = document.querySelectorAll(`input[name="${key}"]:checked`);
+        const values = Array.from(inputs).map((inp) => +inp.value);
+        userAnswers[key] = { sel: isCheck ? values : values[0] };
+      }
+
+      function changeSection(dir) {
+        if (dir === 1 && currentSectionIndex < sections.length - 1) {
+          currentSectionIndex++;
+          renderSection();
+        } else if (dir === -1 && currentSectionIndex > 0) {
+          currentSectionIndex--;
+          renderSection();
+        } else if (currentSectionIndex === sections.length - 1 && dir === 1) {
+          gradeExam();
+        }
+      }
+
+      function gradeExam() {
+        let totalClosed = 0;
+        let correctClosed = 0;
+
+        sections.forEach((sec, si) => {
+          sec.q.forEach((q, qi) => {
+            if (!q.k) {
+              totalClosed++;
+              const uniqueKey = `sec_${si}_q_${qi}`;
+              const saved = userAnswers[uniqueKey];
+              if (saved !== undefined) {
+                const sel = q.m ? (saved.sel || []).slice().sort().join() : String(saved.sel ?? "");
+                const good = q.a.slice().sort().join() === sel;
+                if (good) correctClosed++;
+              }
+            }
+          });
+        });
+
+        const pct = totalClosed > 0 ? Math.round((correctClosed / totalClosed) * 100) : 0;
+
+        document.getElementById("exam-container").innerHTML = `
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center">
+                <div class="text-5xl mb-3">🏆</div>
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-2">¡Examen Calificado!</h2>
+                <p class="text-slate-500 text-sm mb-6">Resultado correspondiente a las preguntas de opción múltiple y verdadero/falso.</p>
+                
+                <div class="inline-flex items-center justify-center bg-indigo-50 text-indigo-700 font-extrabold text-4xl px-8 py-5 rounded-2xl border border-indigo-100 mb-6">
+                    ${correctClosed} / ${totalClosed} <span class="text-xl text-indigo-400 font-normal ml-2">(${pct}%)</span>
+                </div>
+
+                <p class="text-base font-semibold mb-6 ${pct >= 80 ? "text-emerald-600" : pct >= 60 ? "text-amber-600" : "text-rose-600"}">
+                    ${pct >= 80 ? "¡Excelente dominio de los temas de investidura!" : "Buen esfuerzo. Revisa los apartados teóricos para reforzar."}
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="currentSectionIndex=0; renderSection();" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 px-6 rounded-xl transition text-sm shadow-sm">
+                        Repasar Secciones Nuevamente
+                    </button>
+                    <button onclick="location.reload()" class="bg-white hover:bg-slate-50 text-slate-700 font-semibold py-2.5 px-6 rounded-xl border border-slate-300 transition text-sm shadow-sm">
+                        Reiniciar Examen Completo
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.getElementById("prev-btn").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("section-counter-label").innerText = "Calificación Final";
+        document.getElementById("section-title-label").innerText = "Completado";
+        document.getElementById("progress-bar").style.width = `100%`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // Inicializar cargando la primera sección
+      renderSection();
     </script>
   </body>
 </html>
